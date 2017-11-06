@@ -1,0 +1,38 @@
+version: "2.1"
+services:
+
+  postgrest:
+    image: postgrest/postgrest:v0.4.3.0
+    ports:
+      - "3000:3000"
+    depends_on:
+      - postgresql
+    environment:
+      PGRST_DB_URI: postgres://authenticator:${PGRST_AUTHENTICATOR_PASSWORD}@postgresql:5432/${POSTGRES_DB}
+      PGRST_DB_SCHEMA: api
+      PGRST_DB_ANON_ROLE: guest
+      PGRST_SERVER_PROXY_URI: ${PGRST_SERVER_PROXY_URI} # More info: https://github.com/begriffs/postgrest/issues/983
+      PGRST_JWT_SECRET: ${OAUTH_ACCESS_TOKEN_JWT_SECRET}
+
+  postgresql:
+    build: ./postgresql
+    ports:
+      - "5432:5432"
+    environment:
+      PGRST_DB_SCHEMA: api
+      PGRST_AUTHENTICATOR_PASSWORD: ${PGRST_AUTHENTICATOR_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+  oauth:
+    build: ../
+    ports:
+      - "3684:3684"
+    environment:
+      OAUTH_DB_CONN_STRING: postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgresql:5432/${POSTGRES_DB}?sslmode=disable
+      OAUTH_ACCESS_TOKEN_JWT_SECRET: ${OAUTH_ACCESS_TOKEN_JWT_SECRET}
+      OAUTH_REFRESH_TOKEN_JWT_SECRET: ${OAUTH_REFRESH_TOKEN_JWT_SECRET}
+      OAUTH_COOKIE_HASH_KEY: ${OAUTH_COOKIE_HASH_KEY}
+      OAUTH_COOKIE_BLOCK_KEY: ${OAUTH_COOKIE_BLOCK_KEY}
+      OAUTH_TEMPLATE_NAME: ${OAUTH_TEMPLATE_NAME}
+      OAUTH_TEMPLATE_PATH: ${OAUTH_TEMPLATE_PATH}
