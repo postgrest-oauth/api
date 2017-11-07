@@ -12,6 +12,7 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/gorilla/handlers"
 	"github.com/gorilla/securecookie"
+	"github.com/rs/cors"
 )
 
 type Page struct {
@@ -159,6 +160,7 @@ func main() {
 
 	Router.HandleFunc("/favicon.ico", handlerFavicon)
 
-	loggedRouter := handlers.LoggingHandler(os.Stdout, Router)
+	corsRouter := cors.Default().Handler(Router)
+	loggedRouter := handlers.LoggingHandler(os.Stdout, corsRouter)
 	log.Fatal(http.ListenAndServe(":3684", loggedRouter))
 }
