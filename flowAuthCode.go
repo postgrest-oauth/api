@@ -162,6 +162,7 @@ func fillTokensResponse(data Data) tokensResponse {
 	claims["type"] = "access_token"
 	claims["role"] = data.UserRole
 	claims["id"] = data.UserId
+	claims["client_id"] = data.ClientId
 	claims["exp"] = time.Now().Add(time.Hour * 24).Unix()
 	accessTokenString, _ := accessToken.SignedString([]byte(*AccessTokenSecret))
 
@@ -169,6 +170,7 @@ func fillTokensResponse(data Data) tokensResponse {
 	claims = refreshToken.Claims.(jwt.MapClaims)
 	claims["type"] = "refresh_token"
 	claims["id"] = data.UserId
+	claims["client_id"] = data.ClientId
 	claims["exp"] = time.Now().Add(time.Hour * 24 * 365).Unix()
 	refreshTokenString, _ := refreshToken.SignedString([]byte(*RefreshTokenSecret))
 
