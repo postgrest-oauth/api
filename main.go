@@ -160,7 +160,7 @@ func main() {
 
 	Router.HandleFunc("/favicon.ico", handlerFavicon)
 
-	corsRouter := cors.Default().Handler(Router)
+	corsRouter := cors.AllowAll().Handler(Router)
 	loggedRouter := handlers.LoggingHandler(os.Stdout, corsRouter)
 	log.Fatal(http.ListenAndServe(":3684", loggedRouter))
 }
