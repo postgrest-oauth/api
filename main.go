@@ -127,6 +127,10 @@ func handlerLogout(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, "/", 302)
 }
 
+func handlerFavicon (w http.ResponseWriter, r *http.Request) {
+	http.ServeFile(w, r, *templatePath + "favicon.ico")
+}
+
 func main() {
 	log.Println("Started!")
 	flag.Parse()
@@ -152,6 +156,9 @@ func main() {
 	Router.HandleFunc("/", handlerHomePost).Methods("POST")
 	Router.HandleFunc("/signup", handlerSignup).Methods("POST", "GET")
 	Router.HandleFunc("/logout", handlerLogout).Methods("GET")
+
+	Router.HandleFunc("/favicon.ico", handlerFavicon)
+
 	loggedRouter := handlers.LoggingHandler(os.Stdout, Router)
 	log.Fatal(http.ListenAndServe(":3684", loggedRouter))
 }
