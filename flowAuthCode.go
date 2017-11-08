@@ -141,9 +141,22 @@ func handlerAuthCodeRefreshToken(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if claims, ok := refreshToken.Claims.(jwt.MapClaims); ok && refreshToken.Valid && claims["type"] == "refresh_token" {
-		d := Data{
-			UserId:   claims["id"].(string),
+		userId := claims["id"].(string)
+		clientId := claims["client_id"].(string)
+		o := Owner{Id: userId}
+		errRole, role := o.getOwnerRoleById()
+		if errRole != nil {
+			e := &errorResponse{Error: "invalid_grant"}
+			js, _ := json.Marshal(e)
+			jsonResponse(js, w, http.StatusBadRequest)
+			return
 		}
+		d := Data{
+			UserId:   userId,
+			ClientId: clientId,
+			UserRole: role,
+		}
+
 		response := fillTokensResponse(d)
 		js, _ := json.Marshal(response)
 		jsonResponse(js, w, http.StatusOK)

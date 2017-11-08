@@ -9,6 +9,7 @@ import (
 )
 
 type Owner struct {
+	Id       string
 	Username string
 	Password string
 	Email    string
@@ -53,6 +54,26 @@ func (a *Owner) check() (resErr error, id string, role string) {
 
 	resErr = err
 	return resErr, id, role
+}
+
+func (a *Owner) getOwnerRoleById() (resErr error, role string) {
+	db, err := dbConnect()
+
+	query := fmt.Sprintf("SELECT role::text FROM oauth2.owner_role_by_id('%s')", a.Id)
+	var uRole sql.NullString
+	err = db.QueryRow(query).Scan(&uRole)
+
+	if err != nil {
+		log.Print(err)
+		err = fmt.Errorf("something bad happened. Owner ID: '%s'", a.Id)
+	} else if uRole.Valid {
+		role = uRole.String
+	} else {
+		err = fmt.Errorf("wrong owner id '%s'", a.Id)
+	}
+
+	resErr = err
+	return resErr, role
 }
 
 type Client struct {
