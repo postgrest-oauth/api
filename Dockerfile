@@ -3,6 +3,7 @@ MAINTAINER Ivan Kuznetsov <kuzma.wm@gmail.com>
 
 ENV OAUTH_DB_CONN_STRING="postgres://user:pass@postgresql:5432/test?sslmode=disable" \
     OAUTH_ACCESS_TOKEN_JWT_SECRET="morethan32symbolssecretkey!!!!!!" \
+    OAUTH_ACCESS_TOKEN_TTL=7200 \
     OAUTH_REFRESH_TOKEN_JWT_SECRET="notlesshan32symbolssecretkey!!!!" \
     OAUTH_COOKIE_HASH_KEY="supersecret" \
     OAUTH_COOKIE_BLOCK_KEY="16charssecret!!!" \
@@ -20,6 +21,7 @@ RUN apk del openssl git && rm -vf /usr/bin/dep
 CMD ./postgrest-oauth-server \
     -dbConnString "${OAUTH_DB_CONN_STRING}" \
     -accessTokenJWTSecret "${OAUTH_ACCESS_TOKEN_JWT_SECRET}" \
+    -accessTokenTTL ${OAUTH_ACCESS_TOKEN_TTL} \
     -refreshTokenJWTSecret "${OAUTH_REFRESH_TOKEN_JWT_SECRET}" \
     -cookieBlockKey "${OAUTH_COOKIE_BLOCK_KEY}" \
     -cookieHashKey "${OAUTH_COOKIE_HASH_KEY}" \

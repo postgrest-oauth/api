@@ -37,6 +37,7 @@ var dbConnString = flag.String("dbConnString", "postgres://user:pass@localhost:5
 
 var AccessTokenSecret = flag.String("accessTokenJWTSecret", "morethan32symbolssecretkey!!!!!!",
 	"Secret key for generating JWT access tokens")
+var AccessTokenTTL = flag.Int64("accessTokenTTL", 7200, "Access token TTL in seconds")
 var RefreshTokenSecret = flag.String("refreshTokenJWTSecret", "notlesshan32symbolssecretkey!!!!",
 	"Secret key for generating JWT refresh tokens")
 

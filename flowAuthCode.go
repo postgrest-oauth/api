@@ -163,7 +163,7 @@ func fillTokensResponse(data Data) tokensResponse {
 	claims["role"] = data.UserRole
 	claims["id"] = data.UserId
 	claims["client_id"] = data.ClientId
-	claims["exp"] = time.Now().Add(time.Hour * 24).Unix()
+	claims["exp"] = time.Now().Add(time.Second * time.Duration(*AccessTokenTTL)).Unix()
 	accessTokenString, _ := accessToken.SignedString([]byte(*AccessTokenSecret))
 
 	refreshToken := jwt.New(jwt.SigningMethodHS256)
