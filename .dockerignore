@@ -1,3 +1,6 @@
+postgrest-oauth-server
+postgrest-oauth-server-*-*
+vendor
 example
 .idea
 .git

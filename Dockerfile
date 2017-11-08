@@ -11,13 +11,13 @@ ENV OAUTH_DB_CONN_STRING="postgres://user:pass@postgresql:5432/test?sslmode=disa
     OAUTH_TEMPLATE_PATH="./"
 
 WORKDIR /go/src/github.com/wildsurfer/postgrest-oauth-server
-RUN apk add --no-cache openssl git
-RUN wget -O /usr/bin/dep https://github.com/golang/dep/releases/download/v0.3.2/dep-linux-amd64
-RUN chmod +x /usr/bin/dep
 COPY . .
-RUN dep ensure -vendor-only && go build
-#RUN dep status
-RUN apk del openssl git && rm -vf /usr/bin/dep
+RUN apk add --no-cache openssl git && \
+    wget -O /usr/bin/dep https://github.com/golang/dep/releases/download/v0.3.2/dep-linux-amd64 && \
+    chmod +x /usr/bin/dep /usr/bin/dep && \
+    dep ensure -vendor-only && go build && \
+    rm -rf ./vendor && \
+    apk del openssl git && rm -vf /usr/bin/dep
 CMD ./postgrest-oauth-server \
     -dbConnString "${OAUTH_DB_CONN_STRING}" \
     -accessTokenJWTSecret "${OAUTH_ACCESS_TOKEN_JWT_SECRET}" \
