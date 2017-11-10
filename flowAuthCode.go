@@ -67,7 +67,9 @@ func handlerAuthCode(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 	} else {
-		redirectUri = redirectUriRequest
+		if len(redirectUriRequest) > 0 {
+			redirectUri = redirectUriRequest
+		}
 	}
 
 	if err != nil {
