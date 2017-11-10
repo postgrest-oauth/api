@@ -41,7 +41,9 @@ var AccessTokenTTL = flag.Int64("accessTokenTTL", 7200, "Access token TTL in sec
 var RefreshTokenSecret = flag.String("refreshTokenJWTSecret", "notlesshan32symbolssecretkey!!!!",
 	"Secret key for generating JWT refresh tokens")
 
-	var Router = mux.NewRouter().StrictSlash(true)
+var ValidateRedirectURI = flag.Bool("validateRedirectURI", true, "Whether validate redirect URI or not. Handy for development")
+
+var Router = mux.NewRouter().StrictSlash(true)
 
 func handlerHomeGet(w http.ResponseWriter, r *http.Request) {
 	s := r.RequestURI

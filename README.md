@@ -6,7 +6,7 @@ Running
 
 ```
 $ ./postgrest-oauth-server -h
-2017/11/08 12:20:48 Started!
+2017/11/10 19:30:50 Started!
 Usage of ./postgrest-oauth-server:
   -accessTokenJWTSecret string
     	Secret key for generating JWT access tokens (default "morethan32symbolssecretkey!!!!!!")
@@ -24,6 +24,8 @@ Usage of ./postgrest-oauth-server:
     	Name of template html file (default "index.html")
   -templatePath string
     	Path to template html file. With trailing slash (default "./")
+  -validateRedirectURI
+    	Whether validate redirect URI or not. Handy for development (default true)
 ```
 
 Testing with Newman

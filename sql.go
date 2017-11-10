@@ -18,6 +18,7 @@ type Owner struct {
 
 func (a *Owner) create() (resErr error, id string, role string) {
 	db, err := dbConnect()
+	defer db.Close()
 
 	query := fmt.Sprintf("SELECT id::varchar, role::varchar FROM oauth2.create_owner('%s', '%s', '%s')",
 		a.Email, a.Phone, a.Password)
@@ -37,6 +38,7 @@ func (a *Owner) create() (resErr error, id string, role string) {
 
 func (a *Owner) check() (resErr error, id string, role string) {
 	db, err := dbConnect()
+	defer db.Close()
 
 	query := fmt.Sprintf("SELECT id::varchar, role::varchar FROM oauth2.check_owner('%s', '%s')",
 		a.Username, a.Password)
@@ -58,6 +60,7 @@ func (a *Owner) check() (resErr error, id string, role string) {
 
 func (a *Owner) getOwnerRoleById() (resErr error, role string) {
 	db, err := dbConnect()
+	defer db.Close()
 
 	query := fmt.Sprintf("SELECT role::text FROM oauth2.owner_role_by_id('%s')", a.Id)
 	var uRole sql.NullString
@@ -83,6 +86,7 @@ type Client struct {
 
 func (c *Client) check() (resErr error, redirectUri string) {
 	db, err := dbConnect()
+	defer db.Close()
 
 	query := fmt.Sprintf("SELECT redirect_uri::text FROM oauth2.check_client('%s', '%s')",
 		c.Id, c.Secret)
