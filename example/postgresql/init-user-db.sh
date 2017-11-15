@@ -12,16 +12,16 @@ CREATE SCHEMA IF NOT EXISTS oauth2;
 CREATE TABLE IF NOT EXISTS
     oauth2.owners (
       id                  serial PRIMARY KEY NOT NULL,
-      email               text CHECK ( email ~* '^.+@.+\..+$' ),
-      phone               varchar(25),
+      email               text DEFAULT NULL UNIQUE CHECK ( email ~* '^.+@.+\..+$' ),
+      phone               text DEFAULT NULL UNIQUE,
       password            text NOT NULL DEFAULT md5(random()::text) CHECK (length(password) < 512),
       role                varchar NOT NULL DEFAULT 'member',
-      unique              (email, phone)
+      CHECK(email IS NOT NULL OR phone IS NOT NULL)
     );
 
 CREATE OR REPLACE FUNCTION oauth2.create_owner(email text, phone text, password text, OUT id varchar, OUT role varchar)
 AS \$\$
-        INSERT INTO oauth2.owners(email, phone, password) VALUES (email, phone, crypt(password, gen_salt('bf'))) RETURNING id::varchar, role;
+        INSERT INTO oauth2.owners(email, phone, password) VALUES (NULLIF(email, ''), NULLIF(phone, ''), crypt(password, gen_salt('bf'))) RETURNING id::varchar, role;
 \$\$ LANGUAGE SQL;
 
 CREATE OR REPLACE FUNCTION oauth2.check_owner(username text, password text, OUT id varchar, OUT role varchar)
@@ -55,7 +55,7 @@ SELECT redirect_uri FROM oauth2.clients
 
 CREATE SCHEMA api;
 CREATE OR REPLACE VIEW api.me AS
- SELECT 
+ SELECT
     id,
     email,
     phone,
@@ -79,4 +79,3 @@ GRANT USAGE ON SCHEMA api TO "member";
 GRANT SELECT ON TABLE api.me TO "member";
 
 EOSQL
-
