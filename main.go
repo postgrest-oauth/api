@@ -128,7 +128,6 @@ func handlerSignup(w http.ResponseWriter, r *http.Request) {
 
 func handlerLogout(w http.ResponseWriter, r *http.Request) {
 	ClearSession(w)
-	http.Redirect(w, r, "/", 302)
 }
 
 func handlerFavicon (w http.ResponseWriter, r *http.Request) {
