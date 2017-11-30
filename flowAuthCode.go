@@ -59,6 +59,12 @@ func handlerAuthCode(w http.ResponseWriter, r *http.Request) {
 	c := &Client{Id: clientId}
 	err, redirectUri := c.check()
 
+	if err != nil {
+		log.Print(err)
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
 	if *ValidateRedirectURI == true {
 		if len(redirectUriRequest) > 0 && redirectUri != redirectUriRequest {
 			err = errors.New("access denied")
@@ -70,12 +76,6 @@ func handlerAuthCode(w http.ResponseWriter, r *http.Request) {
 		if len(redirectUriRequest) > 0 {
 			redirectUri = redirectUriRequest
 		}
-	}
-
-	if err != nil {
-		log.Print(err)
-		http.Error(w, err.Error(), http.StatusBadRequest)
-		return
 	}
 
 	uId, uRole := GetUser(r)

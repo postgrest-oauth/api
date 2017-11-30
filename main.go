@@ -8,6 +8,7 @@ import (
 	"net/url"
 	"flag"
 	"strings"
+	"errors"
 
 	"github.com/gorilla/mux"
 	"github.com/gorilla/handlers"
@@ -127,7 +128,33 @@ func handlerSignup(w http.ResponseWriter, r *http.Request) {
 }
 
 func handlerLogout(w http.ResponseWriter, r *http.Request) {
+	clientId := r.URL.Query().Get("client_id")
+	redirectUriRequest := r.URL.Query().Get("redirect_uri")
+	c := &Client{Id: clientId}
+	err, redirectUri := c.check()
+
+	if err != nil {
+		log.Print(err)
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	if *ValidateRedirectURI == true {
+		if len(redirectUriRequest) > 0 && redirectUri != redirectUriRequest {
+			err = errors.New("access denied")
+			log.Print(err)
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		}
+	} else {
+		if len(redirectUriRequest) > 0 {
+			redirectUri = redirectUriRequest
+		}
+	}
+
 	ClearSession(w)
+
+	http.Redirect(w, r, redirectUri, 302)
 }
 
 func handlerFavicon (w http.ResponseWriter, r *http.Request) {
