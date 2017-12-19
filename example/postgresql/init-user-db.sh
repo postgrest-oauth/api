@@ -19,7 +19,7 @@ CREATE TABLE IF NOT EXISTS
       CHECK(email IS NOT NULL OR phone IS NOT NULL)
     );
 
-CREATE OR REPLACE FUNCTION oauth2.create_owner(email text, phone text, password text, OUT id varchar, OUT role varchar)
+CREATE OR REPLACE FUNCTION oauth2.create_owner(email text, phone text, password text, verification_code text, OUT id varchar, OUT role varchar)
 AS \$\$
         INSERT INTO oauth2.owners(email, phone, password) VALUES (NULLIF(email, ''), NULLIF(phone, ''), crypt(password, gen_salt('bf'))) RETURNING id::varchar, role;
 \$\$ LANGUAGE SQL;
@@ -35,6 +35,11 @@ CREATE OR REPLACE FUNCTION oauth2.owner_role_by_id(id text, OUT role varchar)
 AS \$\$
 SELECT role::varchar FROM oauth2.owners
     WHERE (id = owner_role_by_id.id::bigint);
+\$\$ LANGUAGE SQL;
+
+CREATE OR REPLACE FUNCTION oauth2.verify_owner(user_id varchar) RETURNS void
+AS \$\$
+UPDATE oauth2.owners SET role='verified' WHERE oauth2.owners.id = user_id::int;
 \$\$ LANGUAGE SQL;
 
 CREATE TABLE IF NOT EXISTS

@@ -1,8 +1,8 @@
 package main
 
 import (
-	"net/http"
 	"log"
+	"net/http"
 )
 
 func SetSession(id string, role string, response http.ResponseWriter) {

@@ -9,19 +9,20 @@ import (
 )
 
 type Owner struct {
-	Id       string
-	Username string
-	Password string
-	Email    string
-	Phone    string
+	Id               string
+	Username         string
+	Password         string
+	Email            string
+	Phone            string
+	VerificationCode string
 }
 
 func (a *Owner) create() (resErr error, id string, role string) {
 	db, err := dbConnect()
 	defer db.Close()
 
-	query := fmt.Sprintf("SELECT id::varchar, role::varchar FROM oauth2.create_owner('%s', '%s', '%s')",
-		a.Email, a.Phone, a.Password)
+	query := fmt.Sprintf("SELECT id::varchar, role::varchar FROM oauth2.create_owner('%s', '%s', '%s', '%s')",
+		a.Email, a.Phone, a.Password, a.VerificationCode)
 	err = db.QueryRow(query).Scan(&id, &role)
 
 	switch {
@@ -56,6 +57,23 @@ func (a *Owner) check() (resErr error, id string, role string) {
 
 	resErr = err
 	return resErr, id, role
+}
+
+func (a *Owner) verify() (resErr error) {
+	db, err := dbConnect()
+	defer db.Close()
+
+	query := fmt.Sprintf("SELECT oauth2.verify_owner('%s')",
+		a.Id)
+	_, err = db.Query(query)
+
+	if err != nil {
+		log.Print(err)
+		err = fmt.Errorf("something bad happened")
+	}
+
+	resErr = err
+	return resErr
 }
 
 func (a *Owner) getOwnerRoleById() (resErr error, role string) {
