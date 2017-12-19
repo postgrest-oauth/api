@@ -7,11 +7,11 @@ import (
 	"net/http"
 	"time"
 
+	"fmt"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gorilla/mux"
 	"github.com/patrickmn/go-cache"
 	"github.com/satori/go.uuid"
-	"fmt"
 )
 
 type Data struct {
@@ -30,27 +30,27 @@ func init() {
 	Router.HandleFunc("/token", handlerAuthCodeToken).
 		Methods("POST").
 		MatcherFunc(func(r *http.Request, rm *mux.RouteMatch) bool {
-		grantType := r.FormValue("grant_type")
-		code := r.FormValue("code")
-		clientId := r.FormValue("client_id")
-		if grantType == "authorization_code" && code != "" && clientId != "" {
-			return true
-		} else {
-			return false
-		}
-	})
+			grantType := r.FormValue("grant_type")
+			code := r.FormValue("code")
+			clientId := r.FormValue("client_id")
+			if grantType == "authorization_code" && code != "" && clientId != "" {
+				return true
+			} else {
+				return false
+			}
+		})
 
 	Router.HandleFunc("/token", handlerAuthCodeRefreshToken).
 		Methods("POST").
 		MatcherFunc(func(r *http.Request, rm *mux.RouteMatch) bool {
-		grantType := r.FormValue("grant_type")
-		refreshToken := r.FormValue("refresh_token")
-		if grantType == "refresh_token" && refreshToken != "" {
-			return true
-		} else {
-			return false
-		}
-	})
+			grantType := r.FormValue("grant_type")
+			refreshToken := r.FormValue("refresh_token")
+			if grantType == "refresh_token" && refreshToken != "" {
+				return true
+			} else {
+				return false
+			}
+		})
 }
 
 func handlerAuthCode(w http.ResponseWriter, r *http.Request) {
@@ -80,7 +80,7 @@ func handlerAuthCode(w http.ResponseWriter, r *http.Request) {
 
 	uId, uRole := GetUser(r)
 	if uId == "" || uRole == "" {
-		http.Redirect(w, r, "/?" + r.URL.RawQuery, 302)
+		http.Redirect(w, r, "/?"+r.URL.RawQuery, 302)
 		return
 	}
 
@@ -106,9 +106,9 @@ type tokensResponse struct {
 }
 
 type errorResponse struct {
-	Error string `json:"error"`
+	Error            string `json:"error"`
 	ErrorDescription string `json:"error_description,omitempty"`
-	State string `json:"state,omitempty"`
+	State            string `json:"state,omitempty"`
 }
 
 func handlerAuthCodeToken(w http.ResponseWriter, r *http.Request) {

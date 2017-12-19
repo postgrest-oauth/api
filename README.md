@@ -6,26 +6,28 @@ Running
 
 ```
 $ ./postgrest-oauth-server -h
-2017/11/10 19:30:50 Started!
+2017/12/19 15:29:45 Started!
 Usage of ./postgrest-oauth-server:
   -accessTokenJWTSecret string
-    	Secret key for generating JWT access tokens (default "morethan32symbolssecretkey!!!!!!")
+        Secret key for generating JWT access tokens (default "morethan32symbolssecretkey!!!!!!")
   -accessTokenTTL int
-    	Access token TTL in seconds (default 7200)
+        Access token TTL in seconds (default 7200)
   -cookieBlockKey string
-    	Block key for cookie creation. 16, 24 or 32 random symbols are valid (default "16charssecret!!!")
+        Block key for cookie creation. 16, 24 or 32 random symbols are valid (default "16charssecret!!!")
   -cookieHashKey string
-    	Hash key for cookie creation. 64 random symbols recommended (default "supersecret")
+        Hash key for cookie creation. 64 random symbols recommended (default "supersecret")
   -dbConnString string
-    	Database connection string (default "postgres://user:pass@localhost:5432/test?sslmode=disable")
+        Database connection string (default "postgres://user:pass@localhost:5432/test?sslmode=disable")
+  -mainTemplate string
+        Name of main template html file (default "index.html")
   -refreshTokenJWTSecret string
-    	Secret key for generating JWT refresh tokens (default "notlesshan32symbolssecretkey!!!!")
-  -templateName string
-    	Name of template html file (default "index.html")
+        Secret key for generating JWT refresh tokens (default "notlesshan32symbolssecretkey!!!!")
   -templatePath string
-    	Path to template html file. With trailing slash (default "./")
+        Path to template html file. With trailing slash (default "./")
   -validateRedirectURI
-    	Whether validate redirect URI or not. Handy for development (default true)
+        Whether validate redirect URI or not. Handy for development (default true)
+  -verifyTemplate string
+        Name of verify template html file (default "verify.html")
 ```
 
 Testing with Newman
