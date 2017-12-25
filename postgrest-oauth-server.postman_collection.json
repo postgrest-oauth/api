@@ -691,7 +691,7 @@
 							"script": {
 								"type": "text/javascript",
 								"exec": [
-									"tests[\"Status code is 302\"] = responseCode.code === 302;"
+									"tests[\"Status code is 200\"] = responseCode.code === 200;"
 								]
 							}
 						}
@@ -701,26 +701,16 @@
 						"header": [],
 						"body": {},
 						"url": {
-							"raw": "http://{{host}}:3684/logout?client_id=spa&redirect_uri=https://spa.uri",
+							"raw": "http://{{host}}:3684/verify/1/jhdbvsdviwufiwsjhbvhbdvkbh",
 							"protocol": "http",
 							"host": [
 								"{{host}}"
 							],
 							"port": "3684",
 							"path": [
-								"logout"
-							],
-							"query": [
-								{
-									"key": "client_id",
-									"value": "spa",
-									"equals": true
-								},
-								{
-									"key": "redirect_uri",
-									"value": "https://spa.uri",
-									"equals": true
-								}
+								"verify",
+								"1",
+								"jhdbvsdviwufiwsjhbvhbdvkbh"
 							]
 						},
 						"description": ""
