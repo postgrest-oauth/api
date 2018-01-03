@@ -31,9 +31,9 @@ type Page struct {
 var tmpl *template.Template
 var cookieHandler *securecookie.SecureCookie
 
-var templatePath = flag.String("templatePath", "./", "Path to template html file. With trailing slash")
-var mainTemplate = flag.String("mainTemplate", "index.html", "Name of main template html file")
-var verifyTemplate = flag.String("verifyTemplate", "verify.html", "Name of verify template html file")
+var templatePath = "./templates/"
+var mainTemplate = "index.html"
+var verifyTemplate = "verify.html"
 
 var cookieHashKey = flag.String("cookieHashKey", "supersecret", "Hash key for cookie creation. 64 random symbols recommended")
 var cookieBlockKey = flag.String("cookieBlockKey", "16charssecret!!!", "Block key for cookie creation. 16, 24 or 32 random symbols are valid")
@@ -59,7 +59,7 @@ func handlerHomeGet(w http.ResponseWriter, r *http.Request) {
 		Title: "SignIn/SignUp",
 		Query: template.URL(s[2:]),
 	}
-	err := tmpl.ExecuteTemplate(w, *mainTemplate, data)
+	err := tmpl.ExecuteTemplate(w, mainTemplate, data)
 	if err != nil {
 		log.Print(err)
 		http.Error(w, err.Error(), http.StatusBadRequest)
@@ -87,7 +87,7 @@ func handlerHomePost(w http.ResponseWriter, r *http.Request) {
 		data.Message = "Wrong username or password"
 		data.Action = "signin"
 		data.Owner.Password = ""
-		err = tmpl.ExecuteTemplate(w, *mainTemplate, data)
+		err = tmpl.ExecuteTemplate(w, mainTemplate, data)
 		if err != nil {
 			log.Print(err)
 			http.Error(w, err.Error(), http.StatusBadRequest)
@@ -120,7 +120,7 @@ func handlerSignup(w http.ResponseWriter, r *http.Request) {
 		data.Message = "User can't be created"
 		data.Action = "signup"
 		data.Owner.Password = ""
-		err = tmpl.ExecuteTemplate(w, *mainTemplate, data)
+		err = tmpl.ExecuteTemplate(w, mainTemplate, data)
 		if err != nil {
 			log.Print(err)
 			http.Error(w, err.Error(), http.StatusBadRequest)
@@ -185,7 +185,7 @@ func handlerVerify(w http.ResponseWriter, r *http.Request) {
 		data.MessageType = "alert"
 	}
 
-	err = tmpl.ExecuteTemplate(w, *verifyTemplate, data)
+	err = tmpl.ExecuteTemplate(w, verifyTemplate, data)
 	if err != nil {
 		log.Print(err)
 		http.Error(w, err.Error(), http.StatusBadRequest)
@@ -194,7 +194,7 @@ func handlerVerify(w http.ResponseWriter, r *http.Request) {
 }
 
 func handlerFavicon(w http.ResponseWriter, r *http.Request) {
-	http.ServeFile(w, r, *templatePath+"favicon.ico")
+	http.ServeFile(w, r, templatePath+"favicon.ico")
 }
 
 func main() {
@@ -207,7 +207,7 @@ func main() {
 		log.Panic("OAUTH_COOKIE_BLOCK_KEY length should be 16, 24 or 32!")
 	}
 
-	tmpl = template.Must(template.ParseFiles(*templatePath+*mainTemplate, *templatePath+*verifyTemplate))
+	tmpl = template.Must(template.ParseFiles(templatePath+mainTemplate, templatePath+verifyTemplate))
 	cookieHandler = securecookie.New([]byte(*cookieHashKey), []byte(*cookieBlockKey))
 
 	Router.HandleFunc("/", handlerHomeGet).Methods("GET").
