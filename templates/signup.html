@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="//cdn.muicss.com/mui-0.9.28/css/mui.min.css" rel="stylesheet" type="text/css" />
+    <script src="//cdn.muicss.com/mui-0.9.28/js/mui.min.js"></script>
+    <link href="//fonts.googleapis.com/css?family=Roboto:300,400,500,700" rel="stylesheet" type="text/css" />
+    <script src="https://unpkg.com/imask"></script>
+    <title>SignUp</title>
+    <style>
+    body {
+        font-family: "Roboto", "Helvetica Neue", Helvetica, Arial;
+    }
+    .alert {
+        padding: 15px;
+        background-color: #f8d7da;
+        color: #721c24;
+        opacity: 1;
+        transition: opacity 0.6s;
+        margin-bottom: 10px;
+        margin-top: 10px;
+        border: 1px solid transparent;
+        border-radius: .3rem;
+    }
+    .button-justify{
+        display: flex; 
+        justify-content: center;
+    }
+    .closebtn {
+        margin-left: 15px;
+        color: black;
+        font-weight: bold;
+        float: right;
+        font-size: 22px;
+        line-height: 20px;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+    .closebtn:hover {
+        color: black;
+    }
+    .mui-container{
+        padding-left: 50px;
+        padding-right: 50px;
+        padding-top: 25px;
+        padding-bottom: 15px;
+        max-width: 400px;
+        margin-left: auto;
+        margin-right: auto;
+        margin-top: 50px;
+        background-color: #fff;
+        color: rgba(0, 0, 0, 0.87);
+        background-color: rgb(255, 255, 255);
+        transition: all 450ms cubic-bezier(0.23, 1, 0.32, 1) 0ms;
+        box-sizing: border-box;
+        font-family: Roboto, sans-serif;
+        -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+        box-shadow: rgba(0, 0, 0, 0.3) 0px 19px 60px, rgba(0, 0, 0, 0.22) 0px 15px 20px;
+        border-radius: 2px;
+        margin-top: 125px;
+        min-width: 320px;
+    }
+     .mui-tabs__pane.mui--is-active {
+        margin-top: 15px;
+    }
+    .mui-tabs__bar>li.mui--is-active {
+        border-bottom: 2px solid rgb(0, 150, 136);
+            /*background-color: rgb(0, 150, 136);*/
+    }
+    .mui-tabs__bar>li.mui--is-active>a {
+        color: rgb(0, 150, 136);
+        font-weight: 900;
+    }
+    .mui-btn.mui-btn--raised.mui-btn--primary{
+        background-color: rgb(0, 150, 136);
+        height: 36px;
+        border-radius: 2px;
+        margin-top: auto;
+    }
+    .mui-tabs__bar>li>a{
+        width: 100px;
+        text-align: center;
+    }
+     @media screen and (max-width: 380px) {
+        .mui-tabs__bar>li>a {
+            width: 60px;
+        }
+     }
+    </style>
+</head>
+
+<body>
+    <div class="mui-container">
+        <ul class="mui-tabs__bar" id="myTab">
+            <li><a data-mui-toggle="tab" data-mui-controls="signin" href="/signin?{{.Query}}">SignIn</a>
+            </li>
+            <li class="mui--is-active"><a data-mui-toggle="tab" data-mui-controls="signup" href="/signup?{{.Query}}">SignUp</a>
+            </li>
+        </ul>
+        <div>
+            {{if eq .Message "WRONG_INPUT"}}
+            <div class="alert">
+                <span class="closebtn">&times;</span>
+                User can't be created!
+            </div>
+            {{end}}
+            <div class="mui-tabs__pane" id="signin" name="signin">
+                <form method="post" action="/signin?{{.Query}}">
+                    <div class="mui-textfield mui-textfield--float-label">
+                        <input type="text" name="username" value="{{.Username}}">
+                        <label>Username</label>
+                    </div>
+                    <div class="mui-textfield mui-textfield--float-label">
+                        <input type="password" name="password">
+                        <label>Password</label>
+                    </div>
+                    <div class="button-justify">
+                        <button class="mui-btn mui-btn--raised mui-btn--primary" type="submit">Submit</button>
+                    </div>
+                </form>
+            </div>
+            <div class="mui-tabs__pane mui--is-active" id="signup" name="signup">
+                <form method="post" action="/signup?{{.Query}}">
+                    <div class="mui-textfield mui-textfield--float-label">
+                        <input type="email"  name="email" value="{{.Email}}" >
+                        <label>Email address</label>
+                    </div>
+                    <div class="mui-textfield mui-textfield--float-label">
+                        <input name="password" type="password">
+                        <label>Password</label>
+                    </div>
+                    <div class="mui-textfield">
+                    <input name="phone" value="{{.Phone}}" type="text" id="phone" placeholder="+123 (45) 678-90-12"/>                       
+                    <label>Phone number</label>
+                    </div>
+                    <div class="button-justify">
+                        <button class="mui-btn mui-btn--raised mui-btn--primary" type="submit">Submit</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+<script>
+//mask
+var element = document.getElementById('phone');
+var maskOptions = {
+  mask: '+00 (000) 000-00-00'
+};
+var mask = new IMask(element, maskOptions);
+//closeBtn
+    var close = document.getElementsByClassName("closebtn");
+    var i;
+    for (i = 0; i < close.length; i++) {
+        close[i].onclick = function() {
+            var div = this.parentElement;
+            div.style.opacity = "0";
+            setTimeout(function() { div.style.display = "none"; }, 600);
+        }
+    }
+</script>
+</body>
+</html>

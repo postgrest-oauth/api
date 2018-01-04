@@ -53,10 +53,15 @@
 
 <body>
     <div class="mui-container">
-            <div class="{{.MessageType}}">
-                {{.Message}}
-            </div>
+        {{if eq .Message "VERIFY_SUCCESS"}}
+        <div class="success">
+            User successfully verified!
         </div>
+        {{else if eq .Message "VERIFY_FAIL"}}
+        <div class="alert">
+            Code is invalid or expired! Please try again.
+        </div>
+        {{end}}
     </div>
 </body>
 </html>

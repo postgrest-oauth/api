@@ -21,10 +21,7 @@ import (
 
 type Page struct {
 	Owner
-	Title       string
 	Message     string
-	MessageType string
-	Action      string // Can be "signin" or "signup"
 	Query       template.URL
 }
 
@@ -32,7 +29,8 @@ var tmpl *template.Template
 var cookieHandler *securecookie.SecureCookie
 
 var templatePath = "./templates/"
-var mainTemplate = "index.html"
+var signinTemplate = "signin.html"
+var signupTemplate = "signup.html"
 var verifyTemplate = "verify.html"
 
 var cookieHashKey = flag.String("cookieHashKey", "supersecret", "Hash key for cookie creation. 64 random symbols recommended")
@@ -53,13 +51,12 @@ var Router = mux.NewRouter().StrictSlash(true)
 
 var VerifyStorage = cache.New(24*time.Hour, 2*time.Hour)
 
-func handlerHomeGet(w http.ResponseWriter, r *http.Request) {
+func handlerSigninGet(w http.ResponseWriter, r *http.Request) {
 	s := r.RequestURI
 	data := &Page{
-		Title: "SignIn/SignUp",
-		Query: template.URL(s[2:]),
+		Query: template.URL(s[8:]),
 	}
-	err := tmpl.ExecuteTemplate(w, mainTemplate, data)
+	err := tmpl.ExecuteTemplate(w, signinTemplate, data)
 	if err != nil {
 		log.Print(err)
 		http.Error(w, err.Error(), http.StatusBadRequest)
@@ -67,7 +64,7 @@ func handlerHomeGet(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func handlerHomePost(w http.ResponseWriter, r *http.Request) {
+func handlerSigninPost(w http.ResponseWriter, r *http.Request) {
 	ClearSession(w)
 	refUrl, _ := url.Parse(r.Referer())
 	rawQuery := refUrl.RawQuery
@@ -77,17 +74,15 @@ func handlerHomePost(w http.ResponseWriter, r *http.Request) {
 			Username: r.FormValue("username"),
 			Password: r.FormValue("password"),
 		},
-		Title: "SignIn/SignUp",
 		Query: template.URL(rawQuery),
 	}
 
 	err, id, role := data.Owner.check()
 
 	if err != nil {
-		data.Message = "Wrong username or password"
-		data.Action = "signin"
+		data.Message = "WRONG_CREDENTIALS"
 		data.Owner.Password = ""
-		err = tmpl.ExecuteTemplate(w, mainTemplate, data)
+		err = tmpl.ExecuteTemplate(w, signinTemplate, data)
 		if err != nil {
 			log.Print(err)
 			http.Error(w, err.Error(), http.StatusBadRequest)
@@ -100,7 +95,20 @@ func handlerHomePost(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func handlerSignup(w http.ResponseWriter, r *http.Request) {
+func handlerSignupGet(w http.ResponseWriter, r *http.Request) {
+	s := r.RequestURI
+	data := &Page{
+		Query: template.URL(s[8:]),
+	}
+	err := tmpl.ExecuteTemplate(w, signupTemplate, data)
+	if err != nil {
+		log.Print(err)
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+}
+
+func handlerSignupPost(w http.ResponseWriter, r *http.Request) {
 	s := r.RequestURI
 	code := uuid.NewV4().String()
 	ClearSession(w)
@@ -111,16 +119,14 @@ func handlerSignup(w http.ResponseWriter, r *http.Request) {
 			Password:         r.FormValue("password"),
 			VerificationCode: code,
 		},
-		Title: "SignIn/SignUp",
 		Query: template.URL(s[8:]),
 	}
 	err, id, role := data.Owner.create()
 
 	if err != nil {
-		data.Message = "User can't be created"
-		data.Action = "signup"
+		data.Message = "WRONG_INPUT"
 		data.Owner.Password = ""
-		err = tmpl.ExecuteTemplate(w, mainTemplate, data)
+		err = tmpl.ExecuteTemplate(w, signupTemplate, data)
 		if err != nil {
 			log.Print(err)
 			http.Error(w, err.Error(), http.StatusBadRequest)
@@ -178,11 +184,9 @@ func handlerVerify(w http.ResponseWriter, r *http.Request) {
 
 	if savedId, ok := VerifyStorage.Get(code); ok && id == savedId && err == nil {
 		VerifyStorage.Delete(code)
-		data.Message = "User successfully verified!"
-		data.MessageType = "success"
+		data.Message = "VERIFY_SUCCESS"
 	} else {
-		data.Message = "Code is invalid or expired! Please try again"
-		data.MessageType = "alert"
+		data.Message = "VERIFY_FAIL"
 	}
 
 	err = tmpl.ExecuteTemplate(w, verifyTemplate, data)
@@ -207,20 +211,21 @@ func main() {
 		log.Panic("OAUTH_COOKIE_BLOCK_KEY length should be 16, 24 or 32!")
 	}
 
-	tmpl = template.Must(template.ParseFiles(templatePath+mainTemplate, templatePath+verifyTemplate))
+	tmpl = template.Must(template.ParseFiles(templatePath+signinTemplate, templatePath+signupTemplate, templatePath+verifyTemplate))
 	cookieHandler = securecookie.New([]byte(*cookieHashKey), []byte(*cookieBlockKey))
 
-	Router.HandleFunc("/", handlerHomeGet).Methods("GET").
+	Router.HandleFunc("/signin", handlerSigninGet).Methods("GET").
 		MatcherFunc(func(r *http.Request, rm *mux.RouteMatch) bool {
-			if strings.Contains(r.RequestURI, "/?response_type=") {
+			if strings.Contains(r.RequestURI, "/signin?response_type=") {
 				return true
 			} else {
 				return false
 			}
 		})
 
-	Router.HandleFunc("/", handlerHomePost).Methods("POST")
-	Router.HandleFunc("/signup", handlerSignup).Methods("POST", "GET")
+	Router.HandleFunc("/signin", handlerSigninPost).Methods("POST")
+	Router.HandleFunc("/signup", handlerSignupGet).Methods("GET")
+	Router.HandleFunc("/signup", handlerSignupPost).Methods("POST")
 	Router.HandleFunc("/logout", handlerLogout).Methods("GET")
 
 	Router.HandleFunc("/verify/{id:[0-9]+}/{code}", handlerVerify).Methods("GET")
