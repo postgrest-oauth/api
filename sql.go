@@ -6,6 +6,7 @@ import (
 	"log"
 
 	_ "github.com/lib/pq"
+	"flag"
 )
 
 type Owner struct {
@@ -16,6 +17,9 @@ type Owner struct {
 	Phone            string
 	VerificationCode string
 }
+
+var dbConnString = flag.String("dbConnString", "postgres://user:pass@localhost:5432/test?sslmode=disable",
+	"Database connection string")
 
 func (a *Owner) create() (resErr error, id string, role string) {
 	db, err := dbConnect()

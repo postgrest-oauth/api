@@ -36,15 +36,6 @@ var verifyTemplate = "verify.html"
 var cookieHashKey = flag.String("cookieHashKey", "supersecret", "Hash key for cookie creation. 64 random symbols recommended")
 var cookieBlockKey = flag.String("cookieBlockKey", "16charssecret!!!", "Block key for cookie creation. 16, 24 or 32 random symbols are valid")
 
-var dbConnString = flag.String("dbConnString", "postgres://user:pass@localhost:5432/test?sslmode=disable",
-	"Database connection string")
-
-var AccessTokenSecret = flag.String("accessTokenJWTSecret", "morethan32symbolssecretkey!!!!!!",
-	"Secret key for generating JWT access tokens")
-var AccessTokenTTL = flag.Int64("accessTokenTTL", 7200, "Access token TTL in seconds")
-var RefreshTokenSecret = flag.String("refreshTokenJWTSecret", "notlesshan32symbolssecretkey!!!!",
-	"Secret key for generating JWT refresh tokens")
-
 var ValidateRedirectURI = flag.Bool("validateRedirectURI", true, "Whether validate redirect URI or not. Handy for development")
 
 var Router = mux.NewRouter().StrictSlash(true)

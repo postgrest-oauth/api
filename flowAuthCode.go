@@ -12,6 +12,7 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/patrickmn/go-cache"
 	"github.com/satori/go.uuid"
+	"flag"
 )
 
 type Data struct {
@@ -21,6 +22,12 @@ type Data struct {
 }
 
 var Storage = cache.New(10*time.Minute, 20*time.Minute)
+
+var AccessTokenSecret = flag.String("accessTokenJWTSecret", "morethan32symbolssecretkey!!!!!!",
+	"Secret key for generating JWT access tokens")
+var AccessTokenTTL = flag.Int64("accessTokenTTL", 7200, "Access token TTL in seconds")
+var RefreshTokenSecret = flag.String("refreshTokenJWTSecret", "notlesshan32symbolssecretkey!!!!",
+	"Secret key for generating JWT refresh tokens")
 
 func init() {
 	Router.HandleFunc("/authorize", handlerAuthCode).
