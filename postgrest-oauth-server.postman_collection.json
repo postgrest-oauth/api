@@ -669,14 +669,14 @@
 							]
 						},
 						"url": {
-							"raw": "http://{{host}}:3684/",
+							"raw": "http://{{host}}:3684/signin",
 							"protocol": "http",
 							"host": [
 								"{{host}}"
 							],
 							"port": "3684",
 							"path": [
-								""
+								"signin"
 							]
 						},
 						"description": ""
@@ -799,14 +799,14 @@
 									]
 								},
 								"url": {
-									"raw": "http://{{host}}:3684/",
+									"raw": "http://{{host}}:3684/signin",
 									"protocol": "http",
 									"host": [
 										"{{host}}"
 									],
 									"port": "3684",
 									"path": [
-										""
+										"signin"
 									]
 								},
 								"description": ""
@@ -948,14 +948,14 @@
 									]
 								},
 								"url": {
-									"raw": "http://localhost:3684/",
+									"raw": "http://localhost:3684/signin",
 									"protocol": "http",
 									"host": [
 										"localhost"
 									],
 									"port": "3684",
 									"path": [
-										""
+										"signin"
 									]
 								},
 								"description": ""
@@ -1048,14 +1048,14 @@
 							]
 						},
 						"url": {
-							"raw": "http://{{host}}:3684/",
+							"raw": "http://{{host}}:3684/signin",
 							"protocol": "http",
 							"host": [
 								"{{host}}"
 							],
 							"port": "3684",
 							"path": [
-								""
+								"signin"
 							]
 						},
 						"description": ""
