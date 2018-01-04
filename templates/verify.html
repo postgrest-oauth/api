@@ -58,7 +58,20 @@
 
 <body>
     <div class="mui-container">
-        {{if eq .Message "VERIFY_SUCCESS"}}
+        {{if eq .Message "WAITING_FOR_CODE"}}
+        <p>
+            Please input verification code from email
+        </p>
+        <form method="post" action="/{{.Query}}">
+            <div class="mui-textfield mui-textfield--float-label">
+                <input type="text"  name="code" value="" >
+                <label>Verification code</label>
+            </div>
+            <div class="button-justify">
+                <button class="mui-btn mui-btn--raised mui-btn--primary" type="submit">Submit</button>
+            </div>
+        </form>
+        {{else if eq .Message "VERIFY_SUCCESS"}}
         <div class="success">
             User successfully verified!
         </div>

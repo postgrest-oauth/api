@@ -7,12 +7,12 @@ import (
 	"net/http"
 	"time"
 
+	"flag"
 	"fmt"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gorilla/mux"
 	"github.com/patrickmn/go-cache"
 	"github.com/satori/go.uuid"
-	"flag"
 )
 
 type Data struct {

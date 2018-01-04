@@ -5,17 +5,18 @@ import (
 	"fmt"
 	"log"
 
-	_ "github.com/lib/pq"
 	"flag"
+	_ "github.com/lib/pq"
 )
 
 type Owner struct {
-	Id               string
-	Username         string
-	Password         string
-	Email            string
-	Phone            string
-	VerificationCode string
+	Id                string
+	Username          string
+	Password          string
+	Email             string
+	Phone             string
+	VerificationCode  string
+	VerificationRoute string
 }
 
 var dbConnString = flag.String("dbConnString", "postgres://user:pass@localhost:5432/test?sslmode=disable",
@@ -25,8 +26,8 @@ func (a *Owner) create() (resErr error, id string, role string) {
 	db, err := dbConnect()
 	defer db.Close()
 
-	query := fmt.Sprintf("SELECT id::varchar, role::varchar FROM oauth2.create_owner('%s', '%s', '%s', '%s')",
-		a.Email, a.Phone, a.Password, a.VerificationCode)
+	query := fmt.Sprintf("SELECT id::varchar, role::varchar FROM oauth2.create_owner('%s', '%s', '%s', '%s', '%s')",
+		a.Email, a.Phone, a.Password, a.VerificationCode, a.VerificationRoute)
 	err = db.QueryRow(query).Scan(&id, &role)
 
 	switch {
