@@ -57,12 +57,13 @@ func handlerSignupPost(w http.ResponseWriter, r *http.Request) {
 	} else {
 		SetSession(id, role, w)
 		route, _ := Router.Get("verify").URL("id", id, "code", code)
+		routeNoCode, _ := Router.Get("verify-no-code").URL("id", id)
 		data.Owner.VerificationRoute = route.String()
 		log.Printf("Verification route for user '%s' is: %s", id, route.String())
 		VerifyStorage.Set(code, id, cache.DefaultExpiration)
 		refUrl, _ := url.Parse(r.Referer())
 		rawQuery := refUrl.RawQuery
-		http.Redirect(w, r, "/authorize?"+rawQuery, 302)
+		http.Redirect(w, r, routeNoCode.String()+"?"+rawQuery, 302)
 		return
 	}
 

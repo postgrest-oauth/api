@@ -48,6 +48,10 @@
         margin-top: 125px;
         min-width: 320px;
     }
+    .button-justify{
+        display: flex;
+        justify-content: center;
+    }
     @media screen and (max-width: 380px) {
         .mui-tabs__bar>li>a {
             width: 60px;
@@ -73,7 +77,12 @@
         </form>
         {{else if eq .Message "VERIFY_SUCCESS"}}
         <div class="success">
-            User successfully verified!
+            <p>User successfully verified!</p>
+            {{if .Query}}
+                <div class="button-justify">
+                    <a class="mui-btn mui-btn--raised mui-btn--primary" href="/authorize?{{.Query}}">Next</a>
+                </div>
+            {{end}}
         </div>
         {{else if eq .Message "VERIFY_FAIL"}}
         <div class="alert">

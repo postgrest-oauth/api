@@ -5,13 +5,14 @@ import (
 	"html/template"
 	"log"
 	"net/http"
+	"net/url"
 )
 
 var verifyTemplate = "verify.html"
 
 func init() {
 	Router.HandleFunc("/verify/{id:[0-9]+}/{code}", handlerVerifyGet).Methods("GET").Name("verify")
-	Router.HandleFunc("/verify/{id:[0-9]+}", handlerVerifyGet).Methods("GET")
+	Router.HandleFunc("/verify/{id:[0-9]+}", handlerVerifyGet).Methods("GET").Name("verify-no-code")
 	Router.HandleFunc("/verify/{id:[0-9]+}", handlerVerifyPost).Methods("POST")
 }
 
@@ -44,10 +45,15 @@ func handlerVerifyGet(w http.ResponseWriter, r *http.Request) {
 }
 
 func handlerVerifyPost(w http.ResponseWriter, r *http.Request) {
+	refUrl, _ := url.Parse(r.Referer())
+	rawQuery := refUrl.RawQuery
+
 	vars := mux.Vars(r)
 	id := vars["id"]
 	code := r.FormValue("code")
-	data := &Page{}
+	data := &Page{
+		Query: template.URL(rawQuery),
+	}
 	owner := &Owner{Id: id}
 	err := owner.verify()
 
