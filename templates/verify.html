@@ -66,9 +66,9 @@
         <p>
             Please input verification code from email
         </p>
-        <form method="post" action="/{{.Query}}">
+        <form method="post" action="/verify?{{.Query}}">
             <div class="mui-textfield mui-textfield--float-label">
-                <input type="text"  name="code" value="" >
+                <input type="text"  name="code" value="{{.VerificationCode}}" required >
                 <label>Verification code</label>
             </div>
             <div class="button-justify">

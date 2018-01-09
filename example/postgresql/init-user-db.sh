@@ -42,6 +42,16 @@ AS \$\$
 UPDATE oauth2.owners SET role='verified' WHERE oauth2.owners.id = user_id::int;
 \$\$ LANGUAGE SQL;
 
+CREATE OR REPLACE FUNCTION oauth2.password_request(username text, verification_code text, verification_route text, OUT id varchar)
+AS \$\$
+        SELECT id::varchar from oauth2.owners WHERE email = password_request.username OR phone = password_request.username;
+\$\$ LANGUAGE SQL;
+
+CREATE OR REPLACE FUNCTION oauth2.password_reset(id text, password text) RETURNS void
+AS \$\$
+        UPDATE oauth2.owners SET password = crypt(password_reset.password, gen_salt('bf')) WHERE id = password_reset.id::int;
+\$\$ LANGUAGE SQL;
+
 CREATE TABLE IF NOT EXISTS
     oauth2.clients (
       id                  text NOT NULL PRIMARY KEY,

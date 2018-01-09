@@ -8,15 +8,17 @@ import (
 	"net/url"
 )
 
-var verifyTemplate = "verify.html"
+var passwordResetTemplate = "password-reset.html"
 
 func init() {
-	Router.HandleFunc("/verify/{code}", handlerVerifyGet).Methods("GET").Name("verify")
-	Router.HandleFunc("/verify", handlerVerifyGet).Methods("GET").Name("verify-no-code")
-	Router.HandleFunc("/verify", handlerVerifyPost).Methods("POST")
+	Router.HandleFunc("/password/reset/{code}", handlerPassResetGet).Methods("GET").
+		Name("verify-pass")
+	Router.HandleFunc("/password/reset", handlerPassResetGet).Methods("GET").
+		Name("verify-pass-no-code")
+	Router.HandleFunc("/password/reset", handlerPassResetPost).Methods("POST")
 }
 
-func handlerVerifyGet(w http.ResponseWriter, r *http.Request) {
+func handlerPassResetGet(w http.ResponseWriter, r *http.Request) {
 	s := r.URL.RawQuery
 	vars := mux.Vars(r)
 	code := vars["code"]
@@ -26,7 +28,7 @@ func handlerVerifyGet(w http.ResponseWriter, r *http.Request) {
 		Message:          "WAITING_FOR_CODE",
 	}
 
-	err := tmpl.ExecuteTemplate(w, verifyTemplate, data)
+	err := tmpl.ExecuteTemplate(w, passwordResetTemplate, data)
 	if err != nil {
 		log.Print(err)
 		http.Error(w, err.Error(), http.StatusBadRequest)
@@ -34,30 +36,31 @@ func handlerVerifyGet(w http.ResponseWriter, r *http.Request) {
 	return
 }
 
-func handlerVerifyPost(w http.ResponseWriter, r *http.Request) {
-	ClearSession(w)
+func handlerPassResetPost(w http.ResponseWriter, r *http.Request) {
 	refUrl, _ := url.Parse(r.Referer())
 	rawQuery := refUrl.RawQuery
 
 	code := r.FormValue("code")
+	password := r.FormValue("password")
 	data := &Page{
 		Query: template.URL(rawQuery),
 	}
-	savedId, ok := VerifyStorage.Get(code)
+	savedId, ok := PassResetStorage.Get(code)
 	owner := &Owner{}
 
 	if ok {
 		owner.Id = savedId.(string)
+		owner.Password = password
 	}
 
-	if err := owner.verify(); ok && err == nil {
-		VerifyStorage.Delete(code)
+	if err := owner.resetPassword(); ok && err == nil {
+		PassResetStorage.Delete(code)
 		data.Message = "VERIFY_SUCCESS"
 	} else {
 		data.Message = "VERIFY_FAIL"
 	}
 
-	err := tmpl.ExecuteTemplate(w, verifyTemplate, data)
+	err := tmpl.ExecuteTemplate(w, passwordResetTemplate, data)
 	if err != nil {
 		log.Print(err)
 		http.Error(w, err.Error(), http.StatusBadRequest)

@@ -107,21 +107,6 @@
                 User can't be created!
             </div>
             {{end}}
-            <div class="mui-tabs__pane" id="signin" name="signin">
-                <form method="post" action="/signin?{{.Query}}">
-                    <div class="mui-textfield mui-textfield--float-label">
-                        <input type="text" name="username" value="{{.Username}}">
-                        <label>Username</label>
-                    </div>
-                    <div class="mui-textfield mui-textfield--float-label">
-                        <input type="password" name="password">
-                        <label>Password</label>
-                    </div>
-                    <div class="button-justify">
-                        <button class="mui-btn mui-btn--raised mui-btn--primary" type="submit">Submit</button>
-                    </div>
-                </form>
-            </div>
             <div class="mui-tabs__pane mui--is-active" id="signup" name="signup">
                 <form method="post" action="/signup?{{.Query}}">
                     <div class="mui-textfield mui-textfield--float-label">
@@ -129,7 +114,7 @@
                         <label>Email address</label>
                     </div>
                     <div class="mui-textfield mui-textfield--float-label">
-                        <input name="password" type="password">
+                        <input name="password" type="password" required >
                         <label>Password</label>
                     </div>
                     <div class="mui-textfield">

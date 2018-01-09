@@ -17,8 +17,9 @@ import (
 
 type Page struct {
 	Owner
-	Message string
-	Query   template.URL
+	Message          string
+	Query            template.URL
+	VerificationCode string
 }
 
 var ValidateRedirectURI = flag.Bool("validateRedirectURI", true, "Whether validate redirect URI or not. Handy for development")
@@ -27,6 +28,7 @@ var tmpl *template.Template
 var templatePath = "./templates/"
 var Router = mux.NewRouter().StrictSlash(true)
 var VerifyStorage = cache.New(24*time.Hour, 2*time.Hour)
+var PassResetStorage = cache.New(10*time.Minute, 5*time.Minute)
 
 func handlerLogout(w http.ResponseWriter, r *http.Request) {
 	clientId := r.URL.Query().Get("client_id")
@@ -72,7 +74,13 @@ func main() {
 		log.Panic("OAUTH_COOKIE_BLOCK_KEY length should be 16, 24 or 32!")
 	}
 
-	tmpl = template.Must(template.ParseFiles(templatePath+signinTemplate, templatePath+signupTemplate, templatePath+verifyTemplate))
+	tmpl = template.Must(template.ParseFiles(
+		templatePath+signinTemplate,
+		templatePath+signupTemplate,
+		templatePath+verifyTemplate,
+		templatePath+passwordRequestTemplate,
+		templatePath+passwordResetTemplate,
+	))
 
 	Router.HandleFunc("/logout", handlerLogout).Methods("GET")
 	Router.HandleFunc("/favicon.ico", handlerFavicon)

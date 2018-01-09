@@ -110,34 +110,18 @@
             <div class="mui-tabs__pane mui--is-active" id="signin" name="signin">
                 <form method="post" action="/signin?{{.Query}}">
                     <div class="mui-textfield mui-textfield--float-label">
-                        <input type="text" name="username" value="{{.Username}}">
+                        <input type="text" name="username" value="{{.Username}}" required >
                         <label>Username</label>
                     </div>
                     <div class="mui-textfield mui-textfield--float-label">
-                        <input type="password" name="password">
+                        <input type="password" name="password" required >
                         <label>Password</label>
                     </div>
                     <div class="button-justify">
                         <button class="mui-btn mui-btn--raised mui-btn--primary" type="submit">Submit</button>
                     </div>
-                </form>
-            </div>
-            <div class="mui-tabs__pane" id="signup" name="signup">
-                <form method="post" action="/signup?{{.Query}}">
-                    <div class="mui-textfield mui-textfield--float-label">
-                        <input type="email"  name="email" value="{{.Email}}" >
-                        <label>Email address</label>
-                    </div>
-                    <div class="mui-textfield mui-textfield--float-label">
-                        <input name="password" type="password">
-                        <label>Password</label>
-                    </div>
-                    <div class="mui-textfield">
-                    <input name="phone" value="{{.Phone}}" type="text" id="phone" placeholder="+123 (45) 678-90-12"/>                       
-                    <label>Phone number</label>
-                    </div>
                     <div class="button-justify">
-                        <button class="mui-btn mui-btn--raised mui-btn--primary" type="submit">Submit</button>
+                        <a href="/password/request?{{.Query}}">Forgot your password?</a>
                     </div>
                 </form>
             </div>
