@@ -9,7 +9,7 @@
     <script src="//cdn.muicss.com/mui-0.9.28/js/mui.min.js"></script>
     <link href="//fonts.googleapis.com/css?family=Roboto:300,400,500,700" rel="stylesheet" type="text/css" />
     <script src="https://unpkg.com/imask"></script>
-    <title>{{.Title}}</title>
+    <title>SignUp</title>
     <style>
     body {
         font-family: "Roboto", "Helvetica Neue", Helvetica, Arial;
@@ -84,9 +84,10 @@
         width: 100px;
         text-align: center;
     }
-     @media screen and (max-width: 380px) {
-        .mui-tabs__bar>li>a{
-        width: 60px; 
+    @media screen and (max-width: 380px) {
+        .mui-tabs__bar>li>a {
+            width: 60px;
+        }
     }
     </style>
 </head>
@@ -94,41 +95,26 @@
 <body>
     <div class="mui-container">
         <ul class="mui-tabs__bar" id="myTab">
-            <li class="mui--is-active"><a data-mui-toggle="tab" data-mui-controls="signin" href="#signin">SignIn</a>
+            <li><a data-mui-toggle="tab" data-mui-controls="signin" href="/signin?{{.Query}}">SignIn</a>
             </li>
-            <li><a data-mui-toggle="tab" data-mui-controls="signup" href="#signup">SignUp</a>
+            <li class="mui--is-active"><a data-mui-toggle="tab" data-mui-controls="signup" href="/signup?{{.Query}}">SignUp</a>
             </li>
         </ul>
         <div>
-             {{if .Message}}
+            {{if eq .Message "WRONG_INPUT"}}
             <div class="alert">
                 <span class="closebtn">&times;</span>
-                {{.Message}}
+                User can't be created!
             </div>
             {{end}}
-            <div class="mui-tabs__pane mui--is-active" id="signin" name="signin">
-                <form method="post" action="/?{{.Query}}">
-                    <div class="mui-textfield mui-textfield--float-label">
-                        <input type="text" name="username" value="{{.Username}}">
-                        <label>Username</label>
-                    </div>
-                    <div class="mui-textfield mui-textfield--float-label">
-                        <input type="password" name="password">
-                        <label>Password</label>
-                    </div>
-                    <div class="button-justify">
-                        <button class="mui-btn mui-btn--raised mui-btn--primary" type="submit">Submit</button>
-                    </div>
-                </form>
-            </div>
-            <div class="mui-tabs__pane" id="signup" name="signup">
+            <div class="mui-tabs__pane mui--is-active" id="signup" name="signup">
                 <form method="post" action="/signup?{{.Query}}">
                     <div class="mui-textfield mui-textfield--float-label">
                         <input type="email"  name="email" value="{{.Email}}" >
                         <label>Email address</label>
                     </div>
                     <div class="mui-textfield mui-textfield--float-label">
-                        <input name="password" type="password">
+                        <input name="password" type="password" required >
                         <label>Password</label>
                     </div>
                     <div class="mui-textfield">
@@ -146,7 +132,7 @@
 //mask
 var element = document.getElementById('phone');
 var maskOptions = {
-  mask: '+000 (000) 000-00-00'
+  mask: '+00 (000) 000-00-00'
 };
 var mask = new IMask(element, maskOptions);
 //closeBtn
@@ -159,18 +145,6 @@ var mask = new IMask(element, maskOptions);
             setTimeout(function() { div.style.display = "none"; }, 600);
         }
     }
-//tabsShow
-    var url = window.location.href
-    var val = url.search('#signup')  
-    if (val !== -1)  {
-        mui.tabs.activate('signup')
-    } else {
-        mui.tabs.activate('signin')
-    }
-
-    {{if .Action}}
-        mui.tabs.activate('{{.Action}}');
-    {{end}}
 </script>
 </body>
 </html>

@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"time"
 
+	"flag"
 	"fmt"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gorilla/mux"
@@ -21,6 +22,12 @@ type Data struct {
 }
 
 var Storage = cache.New(10*time.Minute, 20*time.Minute)
+
+var AccessTokenSecret = flag.String("accessTokenJWTSecret", "morethan32symbolssecretkey!!!!!!",
+	"Secret key for generating JWT access tokens")
+var AccessTokenTTL = flag.Int64("accessTokenTTL", 7200, "Access token TTL in seconds")
+var RefreshTokenSecret = flag.String("refreshTokenJWTSecret", "notlesshan32symbolssecretkey!!!!",
+	"Secret key for generating JWT refresh tokens")
 
 func init() {
 	Router.HandleFunc("/authorize", handlerAuthCode).
@@ -80,7 +87,7 @@ func handlerAuthCode(w http.ResponseWriter, r *http.Request) {
 
 	uId, uRole := GetUser(r)
 	if uId == "" || uRole == "" {
-		http.Redirect(w, r, "/?"+r.URL.RawQuery, 302)
+		http.Redirect(w, r, "/signin?"+r.URL.RawQuery, 302)
 		return
 	}
 

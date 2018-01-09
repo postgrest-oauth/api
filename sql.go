@@ -5,24 +5,29 @@ import (
 	"fmt"
 	"log"
 
+	"flag"
 	_ "github.com/lib/pq"
 )
 
 type Owner struct {
-	Id               string
-	Username         string
-	Password         string
-	Email            string
-	Phone            string
-	VerificationCode string
+	Id                string
+	Username          string
+	Password          string
+	Email             string
+	Phone             string
+	VerificationCode  string
+	VerificationRoute string
 }
+
+var dbConnString = flag.String("dbConnString", "postgres://user:pass@localhost:5432/test?sslmode=disable",
+	"Database connection string")
 
 func (a *Owner) create() (resErr error, id string, role string) {
 	db, err := dbConnect()
 	defer db.Close()
 
-	query := fmt.Sprintf("SELECT id::varchar, role::varchar FROM oauth2.create_owner('%s', '%s', '%s', '%s')",
-		a.Email, a.Phone, a.Password, a.VerificationCode)
+	query := fmt.Sprintf("SELECT id::varchar, role::varchar FROM oauth2.create_owner('%s', '%s', '%s', '%s', '%s')",
+		a.Email, a.Phone, a.Password, a.VerificationCode, a.VerificationRoute)
 	err = db.QueryRow(query).Scan(&id, &role)
 
 	switch {
@@ -69,7 +74,47 @@ func (a *Owner) verify() (resErr error) {
 
 	if err != nil {
 		log.Print(err)
-		err = fmt.Errorf("something bad happened")
+		err = fmt.Errorf("owner with id '%s' doesn't exist", a.Id)
+	}
+
+	resErr = err
+	return resErr
+}
+
+func (a *Owner) requestPassword() (resErr error, id string) {
+	db, err := dbConnect()
+	defer db.Close()
+
+	query := fmt.Sprintf("SELECT id::varchar FROM oauth2.password_request('%s', '%s', '%s')",
+		a.Username, a.VerificationCode, a.VerificationRoute)
+	err = db.QueryRow(query).Scan(&id)
+
+	switch {
+	case err != nil:
+		log.Print(err)
+		err = fmt.Errorf("looks like owner doesn't exist")
+	default:
+		log.Printf("User exist. ID: %s", id)
+	}
+
+	resErr = err
+	return resErr, id
+}
+
+func (a *Owner) resetPassword() (resErr error) {
+	db, err := dbConnect()
+	defer db.Close()
+
+	query := fmt.Sprintf("SELECT oauth2.password_reset('%s', '%s')",
+		a.Id, a.Password)
+	_, err = db.Query(query)
+
+	switch {
+	case err != nil:
+		log.Print(err)
+		err = fmt.Errorf("password reset error. USER ID: '%s'", a.Id)
+	default:
+		log.Printf("Password reseted. USER ID: %s", a.Id)
 	}
 
 	resErr = err

@@ -14,16 +14,11 @@ ENV OAUTH_DB_CONN_STRING="postgres://user:pass@postgresql:5432/test?sslmode=disa
     OAUTH_REFRESH_TOKEN_JWT_SECRET="notlesshan32symbolssecretkey!!!!" \
     OAUTH_COOKIE_HASH_KEY="supersecret" \
     OAUTH_COOKIE_BLOCK_KEY="16charssecret!!!" \
-    OAUTH_MAIN_TEMPLATE="index.html" \
-    OAUTH_VERIFY_TEMPLATE="verify.html" \
-    OAUTH_TEMPLATE_PATH="./" \
     OAUTH_VALIDATE_REDIRECT_URI=true
 RUN apk --no-cache add ca-certificates
 WORKDIR /root/
 COPY --from=0 /go/src/github.com/wildsurfer/postgrest-oauth-server/postgrest-oauth-server .
-COPY --from=0 /go/src/github.com/wildsurfer/postgrest-oauth-server/index.html .
-COPY --from=0 /go/src/github.com/wildsurfer/postgrest-oauth-server/verify.html .
-COPY --from=0 /go/src/github.com/wildsurfer/postgrest-oauth-server/favicon.ico .
+COPY --from=0 /go/src/github.com/wildsurfer/postgrest-oauth-server/templates/ ./templates
 CMD ./postgrest-oauth-server \
     -dbConnString "${OAUTH_DB_CONN_STRING}" \
     -accessTokenJWTSecret "${OAUTH_ACCESS_TOKEN_JWT_SECRET}" \
@@ -31,7 +26,4 @@ CMD ./postgrest-oauth-server \
     -refreshTokenJWTSecret "${OAUTH_REFRESH_TOKEN_JWT_SECRET}" \
     -cookieBlockKey "${OAUTH_COOKIE_BLOCK_KEY}" \
     -cookieHashKey "${OAUTH_COOKIE_HASH_KEY}" \
-    -mainTemplate "${OAUTH_MAIN_TEMPLATE}" \
-    -verifyTemplate "${OAUTH_VERIFY_TEMPLATE}" \
-    -templatePath "${OAUTH_TEMPLATE_PATH}" \
     -validateRedirectURI=${OAUTH_VALIDATE_REDIRECT_URI}

@@ -48,15 +48,47 @@
         margin-top: 125px;
         min-width: 320px;
     }
+    .button-justify{
+        display: flex;
+        justify-content: center;
+    }
+    @media screen and (max-width: 380px) {
+        .mui-tabs__bar>li>a {
+            width: 60px;
+        }
+    }
     </style>
 </head>
 
 <body>
     <div class="mui-container">
-            <div class="{{.MessageType}}">
-                {{.Message}}
+        {{if eq .Message "WAITING_FOR_CODE"}}
+        <p>
+            Please input verification code from email
+        </p>
+        <form method="post" action="/verify?{{.Query}}">
+            <div class="mui-textfield mui-textfield--float-label">
+                <input type="text"  name="code" value="{{.VerificationCode}}" required >
+                <label>Verification code</label>
             </div>
+            <div class="button-justify">
+                <button class="mui-btn mui-btn--raised mui-btn--primary" type="submit">Submit</button>
+            </div>
+        </form>
+        {{else if eq .Message "VERIFY_SUCCESS"}}
+        <div class="success">
+            <p>User successfully verified!</p>
+            {{if .Query}}
+                <div class="button-justify">
+                    <a class="mui-btn mui-btn--raised mui-btn--primary" href="/authorize?{{.Query}}">Next</a>
+                </div>
+            {{end}}
         </div>
+        {{else if eq .Message "VERIFY_FAIL"}}
+        <div class="alert">
+            Code is invalid or expired! Please try again.
+        </div>
+        {{end}}
     </div>
 </body>
 </html>

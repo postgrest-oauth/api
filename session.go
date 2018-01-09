@@ -1,9 +1,15 @@
 package main
 
 import (
+	"flag"
+	"github.com/gorilla/securecookie"
 	"log"
 	"net/http"
 )
+
+var cookieHashKey = flag.String("cookieHashKey", "supersecret", "Hash key for cookie creation. 64 random symbols recommended")
+var cookieBlockKey = flag.String("cookieBlockKey", "16charssecret!!!", "Block key for cookie creation. 16, 24 or 32 random symbols are valid")
+var cookieHandler = securecookie.New([]byte(*cookieHashKey), []byte(*cookieBlockKey))
 
 func SetSession(id string, role string, response http.ResponseWriter) {
 	value := map[string]string{"id": id, "role": role}

@@ -669,14 +669,14 @@
 							]
 						},
 						"url": {
-							"raw": "http://{{host}}:3684/",
+							"raw": "http://{{host}}:3684/signin",
 							"protocol": "http",
 							"host": [
 								"{{host}}"
 							],
 							"port": "3684",
 							"path": [
-								""
+								"signin"
 							]
 						},
 						"description": ""
@@ -684,7 +684,7 @@
 					"response": []
 				},
 				{
-					"name": "Verify",
+					"name": "Verify with code",
 					"event": [
 						{
 							"listen": "test",
@@ -701,7 +701,7 @@
 						"header": [],
 						"body": {},
 						"url": {
-							"raw": "http://{{host}}:3684/verify/1/jhdbvsdviwufiwsjhbvhbdvkbh",
+							"raw": "http://{{host}}:3684/verify/jhdbvsdviwufiwsjhbvhbdvkbh",
 							"protocol": "http",
 							"host": [
 								"{{host}}"
@@ -709,8 +709,139 @@
 							"port": "3684",
 							"path": [
 								"verify",
-								"1",
 								"jhdbvsdviwufiwsjhbvhbdvkbh"
+							]
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Verify no code",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"url": {
+							"raw": "http://{{host}}:3684/verify",
+							"protocol": "http",
+							"host": [
+								"{{host}}"
+							],
+							"port": "3684",
+							"path": [
+								"verify"
+							]
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Password request",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"url": {
+							"raw": "http://{{host}}:3684/password/request",
+							"protocol": "http",
+							"host": [
+								"{{host}}"
+							],
+							"port": "3684",
+							"path": [
+								"password",
+								"request"
+							]
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Password reset with code",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"url": {
+							"raw": "http://{{host}}:3684/password/reset/jhdscusgdvcusvksjbkhefkuaged3",
+							"protocol": "http",
+							"host": [
+								"{{host}}"
+							],
+							"port": "3684",
+							"path": [
+								"password",
+								"reset",
+								"jhdscusgdvcusvksjbkhefkuaged3"
+							]
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Password reset no code",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"url": {
+							"raw": "http://{{host}}:3684/password/reset",
+							"protocol": "http",
+							"host": [
+								"{{host}}"
+							],
+							"port": "3684",
+							"path": [
+								"password",
+								"reset"
 							]
 						},
 						"description": ""
@@ -799,14 +930,14 @@
 									]
 								},
 								"url": {
-									"raw": "http://{{host}}:3684/",
+									"raw": "http://{{host}}:3684/signin",
 									"protocol": "http",
 									"host": [
 										"{{host}}"
 									],
 									"port": "3684",
 									"path": [
-										""
+										"signin"
 									]
 								},
 								"description": ""
@@ -948,14 +1079,14 @@
 									]
 								},
 								"url": {
-									"raw": "http://localhost:3684/",
+									"raw": "http://localhost:3684/signin",
 									"protocol": "http",
 									"host": [
 										"localhost"
 									],
 									"port": "3684",
 									"path": [
-										""
+										"signin"
 									]
 								},
 								"description": ""
@@ -1048,14 +1179,14 @@
 							]
 						},
 						"url": {
-							"raw": "http://{{host}}:3684/",
+							"raw": "http://{{host}}:3684/signin",
 							"protocol": "http",
 							"host": [
 								"{{host}}"
 							],
 							"port": "3684",
 							"path": [
-								""
+								"signin"
 							]
 						},
 						"description": ""
