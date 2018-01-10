@@ -12,7 +12,6 @@ import (
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gorilla/mux"
 	"github.com/patrickmn/go-cache"
-	"github.com/satori/go.uuid"
 )
 
 type Data struct {
@@ -91,7 +90,7 @@ func handlerAuthCode(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	code := uuid.NewV4().String()
+	code := generateRandomString(randNumbers, 6)
 
 	data := &Data{ClientId: clientId, UserId: uId, UserRole: uRole}
 
