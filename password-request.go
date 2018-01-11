@@ -2,7 +2,6 @@ package main
 
 import (
 	"github.com/patrickmn/go-cache"
-	"github.com/satori/go.uuid"
 	"html/template"
 	"log"
 	"net/http"
@@ -32,7 +31,7 @@ func handlerPassRequestGet(w http.ResponseWriter, r *http.Request) {
 func handlerPassRequestPost(w http.ResponseWriter, r *http.Request) {
 	ClearSession(w)
 	s := r.RequestURI
-	code := uuid.NewV4().String()
+	code := generateRandomNumbers(9)
 
 	data := &Page{
 		Owner: Owner{
