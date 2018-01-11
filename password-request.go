@@ -31,7 +31,7 @@ func handlerPassRequestGet(w http.ResponseWriter, r *http.Request) {
 func handlerPassRequestPost(w http.ResponseWriter, r *http.Request) {
 	ClearSession(w)
 	s := r.RequestURI
-	code := generateRandomString(randNumbers, 6)
+	code := generateRandomString(randNumbers, 9)
 
 	data := &Page{
 		Owner: Owner{

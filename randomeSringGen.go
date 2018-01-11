@@ -7,7 +7,7 @@ import (
 
 const (
 	letterBytes = "abcdefghijkmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789"
-	numberBytes = "23456789"
+	numberBytes = "1234567890"
 	randNumbers = "numbers"
 )
 

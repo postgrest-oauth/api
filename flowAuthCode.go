@@ -90,7 +90,7 @@ func handlerAuthCode(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	code := generateRandomString(randNumbers, 6)
+	code := generateRandomString(randNumbers, 9)
 
 	data := &Data{ClientId: clientId, UserId: uId, UserRole: uRole}
 
