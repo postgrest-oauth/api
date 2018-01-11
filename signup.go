@@ -31,7 +31,7 @@ func handlerSignupGet(w http.ResponseWriter, r *http.Request) {
 func handlerSignupPost(w http.ResponseWriter, r *http.Request) {
 	ClearSession(w)
 	s := r.RequestURI
-	code := generateRandomString(randNumbers, 9)
+	code := generateRandomNumbers(9)
 
 	data := &Page{
 		Owner: Owner{
