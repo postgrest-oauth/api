@@ -42,7 +42,7 @@ func handlerSignupPost(w http.ResponseWriter, r *http.Request) {
 		},
 		Query: template.URL(s[8:]),
 	}
-	err, id, role := data.Owner.create()
+	id, role, jti, err := data.Owner.create()
 
 	if err != nil {
 		data.Message = "WRONG_INPUT"
@@ -54,7 +54,7 @@ func handlerSignupPost(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 	} else {
-		SetSession(id, role, w)
+		SetSession(id, role, jti, w)
 		route, _ := Router.Get("verify").URL("id", id, "code", code)
 		routeNoCode, _ := Router.Get("verify-no-code").URL("id", id)
 		data.Owner.VerificationRoute = route.String()

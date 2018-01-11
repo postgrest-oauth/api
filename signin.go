@@ -49,7 +49,7 @@ func handlerSigninPost(w http.ResponseWriter, r *http.Request) {
 		Query: template.URL(rawQuery),
 	}
 
-	err, id, role := data.Owner.check()
+	id, role, jti, err := data.Owner.check()
 
 	if err != nil {
 		data.Message = "WRONG_CREDENTIALS"
@@ -61,7 +61,7 @@ func handlerSigninPost(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 	} else {
-		SetSession(id, role, w)
+		SetSession(id, role, jti, w)
 		http.Redirect(w, r, "/authorize?"+rawQuery, 302)
 		return
 	}

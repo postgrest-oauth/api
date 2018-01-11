@@ -16,17 +16,18 @@ CREATE TABLE IF NOT EXISTS
       phone               text DEFAULT NULL UNIQUE,
       password            text NOT NULL DEFAULT md5(random()::text) CHECK (length(password) < 512),
       role                varchar NOT NULL DEFAULT 'member',
+      jti                 timestamp without time zone NOT NULL DEFAULT now(),
       CHECK(email IS NOT NULL OR phone IS NOT NULL)
     );
 
-CREATE OR REPLACE FUNCTION oauth2.create_owner(email text, phone text, password text, verification_code text, verification_route text, OUT id varchar, OUT role varchar)
+CREATE OR REPLACE FUNCTION oauth2.create_owner(email text, phone text, password text, verification_code text, verification_route text, OUT id varchar, OUT role varchar, OUT jti varchar)
 AS \$\$
-        INSERT INTO oauth2.owners(email, phone, password) VALUES (NULLIF(email, ''), NULLIF(phone, ''), crypt(password, gen_salt('bf'))) RETURNING id::varchar, role;
+        INSERT INTO oauth2.owners(email, phone, password) VALUES (NULLIF(email, ''), NULLIF(phone, ''), crypt(password, gen_salt('bf'))) RETURNING id::varchar, role, jti::varchar;
 \$\$ LANGUAGE SQL;
 
-CREATE OR REPLACE FUNCTION oauth2.check_owner(username text, password text, OUT id varchar, OUT role varchar)
+CREATE OR REPLACE FUNCTION oauth2.check_owner(username text, password text, OUT id varchar, OUT role varchar, OUT jti varchar)
 AS \$\$
-SELECT id::varchar, role::varchar FROM oauth2.owners
+SELECT id::varchar, role::varchar, jti::varchar FROM oauth2.owners
     WHERE (email = check_owner.username OR phone = check_owner.username)
         AND owners.password = crypt(check_owner.password, owners.password);
 \$\$ LANGUAGE SQL;
@@ -35,6 +36,12 @@ CREATE OR REPLACE FUNCTION oauth2.owner_role_by_id(id text, OUT role varchar)
 AS \$\$
 SELECT role::varchar FROM oauth2.owners
     WHERE (id = owner_role_by_id.id::bigint);
+\$\$ LANGUAGE SQL;
+
+CREATE OR REPLACE FUNCTION oauth2.owner_role_and_jti_by_id(id text, OUT role varchar, OUT jti varchar)
+AS \$\$
+SELECT role::varchar, jti::varchar FROM oauth2.owners
+    WHERE (id = owner_role_and_jti_by_id.id::bigint);
 \$\$ LANGUAGE SQL;
 
 CREATE OR REPLACE FUNCTION oauth2.verify_owner(user_id varchar) RETURNS void
@@ -49,7 +56,7 @@ AS \$\$
 
 CREATE OR REPLACE FUNCTION oauth2.password_reset(id text, password text) RETURNS void
 AS \$\$
-        UPDATE oauth2.owners SET password = crypt(password_reset.password, gen_salt('bf')) WHERE id = password_reset.id::int;
+        UPDATE oauth2.owners SET password = crypt(password_reset.password, gen_salt('bf')), jti = now() WHERE id = password_reset.id::int;
 \$\$ LANGUAGE SQL;
 
 CREATE TABLE IF NOT EXISTS
