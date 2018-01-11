@@ -32,12 +32,6 @@ SELECT id::varchar, role::varchar, jti::varchar FROM oauth2.owners
         AND owners.password = crypt(check_owner.password, owners.password);
 \$\$ LANGUAGE SQL;
 
-CREATE OR REPLACE FUNCTION oauth2.owner_role_by_id(id text, OUT role varchar)
-AS \$\$
-SELECT role::varchar FROM oauth2.owners
-    WHERE (id = owner_role_by_id.id::bigint);
-\$\$ LANGUAGE SQL;
-
 CREATE OR REPLACE FUNCTION oauth2.owner_role_and_jti_by_id(id text, OUT role varchar, OUT jti varchar)
 AS \$\$
 SELECT role::varchar, jti::varchar FROM oauth2.owners
