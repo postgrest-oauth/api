@@ -91,7 +91,7 @@ func handlerAuthCode(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	code := generateRandomNumbers(9)
+	code := generateRandomString(24)
 
 	data := &Data{ClientId: clientId, UserId: uId, UserRole: uRole, UserJti: uJti}
 
@@ -126,6 +126,7 @@ func handlerAuthCodeToken(w http.ResponseWriter, r *http.Request) {
 		if data.(Data).ClientId == clientId {
 			response := fillTokensResponse(data.(Data))
 			js, _ := json.Marshal(response)
+			Storage.Delete(code)
 			jsonResponse(js, w, http.StatusOK)
 			return
 		} else {
