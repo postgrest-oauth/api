@@ -127,24 +127,5 @@
             </div>
         </div>
     </div>
-<script>
-//mask
-var element = document.getElementById('phone');
-var maskOptions = {
-  mask: '+00 (000) 000-00-00'
-};
-var mask = new IMask(element, maskOptions);
-//closeBtn
-    var close = document.getElementsByClassName("closebtn");
-    var i;
-    for (i = 0; i < close.length; i++) {
-        close[i].onclick = function() {
-            var div = this.parentElement;
-            div.style.opacity = "0";
-            setTimeout(function() { div.style.display = "none"; }, 600);
-        }
-    }
-
-</script>
 </body>
 </html>
