@@ -953,7 +953,7 @@
 										"type": "text/javascript",
 										"exec": [
 											"var redirectUri = postman.getResponseHeader(\"Location\");",
-											"var matches = redirectUri.match(/code=([0-9a-z-]+)/);",
+											"var matches = redirectUri.match(/code=([0-9a-zA-Z-]+)/);",
 											"postman.setEnvironmentVariable(\"code\", matches[1]);"
 										]
 									}
@@ -1087,6 +1087,237 @@
 									"port": "3684",
 									"path": [
 										"signin"
+									]
+								},
+								"description": ""
+							},
+							"response": []
+						}
+					],
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "[Test] Code can be used once",
+					"description": "",
+					"item": [
+						{
+							"name": "Access Token Request (SignIn)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"type": "text/javascript",
+										"exec": [
+											"tests[\"Status code is 200\"] = responseCode.code === 302;"
+										]
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/x-www-form-urlencoded"
+									}
+								],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "username",
+											"value": "{{email}}",
+											"description": "",
+											"type": "text"
+										},
+										{
+											"key": "password",
+											"value": "pass",
+											"description": "",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "http://{{host}}:3684/signin",
+									"protocol": "http",
+									"host": [
+										"{{host}}"
+									],
+									"port": "3684",
+									"path": [
+										"signin"
+									]
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "Authorization Request",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"type": "text/javascript",
+										"exec": [
+											"tests[\"No state in response\"] = !responseBody.has(\"state=\");",
+											"",
+											"var redirectUri = postman.getResponseHeader(\"Location\");",
+											"tests[\"Location header is present\"] = redirectUri",
+											"var matches = redirectUri.match(/code=([0-9a-zA-Z-]+)/);",
+											"postman.setEnvironmentVariable(\"code\", matches[1]);"
+										]
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {},
+								"url": {
+									"raw": "http://{{host}}:3684/authorize?response_type=code&client_id=spa",
+									"protocol": "http",
+									"host": [
+										"{{host}}"
+									],
+									"port": "3684",
+									"path": [
+										"authorize"
+									],
+									"query": [
+										{
+											"key": "response_type",
+											"value": "code",
+											"equals": true
+										},
+										{
+											"key": "client_id",
+											"value": "spa",
+											"equals": true
+										}
+									]
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "Access Token Request",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"type": "text/javascript",
+										"exec": [
+											"tests[\"Access token returned\"] = responseBody.has(\"access_token\");",
+											"tests[\"Refresh token returned\"] = responseBody.has(\"refresh_token\");",
+											"tests[\"Token type returned\"] = responseBody.has(\"token_type\");",
+											"",
+											"tests[\"Status code is 200\"] = responseCode.code === 200;",
+											"",
+											"var data = JSON.parse(responseBody);",
+											"postman.setEnvironmentVariable(\"access_token\", data.access_token);",
+											"postman.setEnvironmentVariable(\"refresh_token\", data.refresh_token);"
+										]
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/x-www-form-urlencoded"
+									}
+								],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "grant_type",
+											"value": "authorization_code",
+											"type": "text"
+										},
+										{
+											"key": "code",
+											"value": "{{code}}",
+											"type": "text"
+										},
+										{
+											"key": "client_id",
+											"value": "spa",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "http://{{host}}:3684/token",
+									"protocol": "http",
+									"host": [
+										"{{host}}"
+									],
+									"port": "3684",
+									"path": [
+										"token"
+									]
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "Access Token Request (Should fail)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"type": "text/javascript",
+										"exec": [
+											"tests[\"Error code\"] = responseBody.has(\"error\");",
+											"",
+											"tests[\"Status code is 400\"] = responseCode.code === 400;"
+										]
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/x-www-form-urlencoded"
+									}
+								],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "grant_type",
+											"value": "authorization_code",
+											"type": "text"
+										},
+										{
+											"key": "code",
+											"value": "{{code}}",
+											"type": "text"
+										},
+										{
+											"key": "client_id",
+											"value": "spa",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "http://{{host}}:3684/token",
+									"protocol": "http",
+									"host": [
+										"{{host}}"
+									],
+									"port": "3684",
+									"path": [
+										"token"
 									]
 								},
 								"description": ""
@@ -1256,7 +1487,7 @@
 									"",
 									"var redirectUri = postman.getResponseHeader(\"Location\");",
 									"tests[\"Location header is present\"] = redirectUri",
-									"var matches = redirectUri.match(/code=([0-9a-z-]+)/);",
+									"var matches = redirectUri.match(/code=([0-9a-zA-Z-]+)/);",
 									"postman.setEnvironmentVariable(\"code\", matches[1]);"
 								]
 							}
