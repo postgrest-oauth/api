@@ -22,46 +22,43 @@ type Owner struct {
 var dbConnString = flag.String("dbConnString", "postgres://user:pass@localhost:5432/test?sslmode=disable",
 	"Database connection string")
 
-func (a *Owner) create() (resErr error, id string, role string) {
+func (a *Owner) create() (id string, role string, jti string, err error) {
 	db, err := dbConnect()
 	defer db.Close()
-
-	query := fmt.Sprintf("SELECT id::varchar, role::varchar FROM oauth2.create_owner('%s', '%s', '%s', '%s', '%s')",
+	query := fmt.Sprintf("SELECT id::varchar, role::varchar, jti::varchar FROM oauth2.create_owner('%s', '%s', '%s', '%s', '%s')",
 		a.Email, a.Phone, a.Password, a.VerificationCode, a.VerificationRoute)
-	err = db.QueryRow(query).Scan(&id, &role)
+	err = db.QueryRow(query).Scan(&id, &role, &jti)
 
 	switch {
 	case err != nil:
 		log.Print(err)
 		err = fmt.Errorf("looks like owner already exists")
 	default:
-		log.Printf("User created. ID: %s, ROLE: %s", id, role)
+		log.Printf("User created. ID: %s, ROLE: %s\n", id, role)
 	}
 
-	resErr = err
-	return resErr, id, role
+	return id, role, jti, err
 }
 
-func (a *Owner) check() (resErr error, id string, role string) {
+func (a *Owner) check() (id string, role string, jti string, err error) {
 	db, err := dbConnect()
 	defer db.Close()
 
-	query := fmt.Sprintf("SELECT id::varchar, role::varchar FROM oauth2.check_owner('%s', '%s')",
+	query := fmt.Sprintf("SELECT id::varchar, role::varchar, jti::varchar FROM oauth2.check_owner('%s', '%s')",
 		a.Username, a.Password)
-	var uId, uRole sql.NullString
-	err = db.QueryRow(query).Scan(&uId, &uRole)
+	var uId, uRole, uJti sql.NullString
+	err = db.QueryRow(query).Scan(&uId, &uRole, &uJti)
 
 	if err != nil {
 		log.Print(err)
 		err = fmt.Errorf("something bad happened")
-	} else if uId.Valid && uRole.Valid {
-		id, role = uId.String, uRole.String
+	} else if uId.Valid && uRole.Valid && uJti.Valid {
+		id, role, jti = uId.String, uRole.String, uJti.String
 	} else {
 		err = fmt.Errorf("wrong login or password")
 	}
 
-	resErr = err
-	return resErr, id, role
+	return id, role, jti, err
 }
 
 func (a *Owner) verify() (resErr error) {
@@ -121,25 +118,25 @@ func (a *Owner) resetPassword() (resErr error) {
 	return resErr
 }
 
-func (a *Owner) getOwnerRoleById() (resErr error, role string) {
+func (a *Owner) getOwnerRoleAndJtiById() (role string, jti string, err error) {
 	db, err := dbConnect()
 	defer db.Close()
 
-	query := fmt.Sprintf("SELECT role::text FROM oauth2.owner_role_by_id('%s')", a.Id)
-	var uRole sql.NullString
-	err = db.QueryRow(query).Scan(&uRole)
+	query := fmt.Sprintf("SELECT role::text, jti::text FROM oauth2.owner_role_and_jti_by_id('%s')", a.Id)
+	var uRole, uJti sql.NullString
+	err = db.QueryRow(query).Scan(&uRole, &uJti)
 
 	if err != nil {
 		log.Print(err)
 		err = fmt.Errorf("something bad happened. Owner ID: '%s'", a.Id)
-	} else if uRole.Valid {
+	} else if uRole.Valid && uJti.Valid {
 		role = uRole.String
+		jti = uJti.String
 	} else {
 		err = fmt.Errorf("wrong owner id '%s'", a.Id)
 	}
 
-	resErr = err
-	return resErr, role
+	return role, jti, err
 }
 
 type Client struct {

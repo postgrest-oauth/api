@@ -18,6 +18,7 @@ type Data struct {
 	ClientId string
 	UserId   string
 	UserRole string
+	UserJti  string
 }
 
 var Storage = cache.New(10*time.Minute, 20*time.Minute)
@@ -84,7 +85,7 @@ func handlerAuthCode(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	uId, uRole := GetUser(r)
+	uId, uRole, uJti := GetUser(r)
 	if uId == "" || uRole == "" {
 		http.Redirect(w, r, "/signin?"+r.URL.RawQuery, 302)
 		return
@@ -92,7 +93,7 @@ func handlerAuthCode(w http.ResponseWriter, r *http.Request) {
 
 	code := generateRandomNumbers(9)
 
-	data := &Data{ClientId: clientId, UserId: uId, UserRole: uRole}
+	data := &Data{ClientId: clientId, UserId: uId, UserRole: uRole, UserJti: uJti}
 
 	Storage.Set(code, *data, cache.DefaultExpiration)
 
@@ -164,8 +165,8 @@ func handlerAuthCodeRefreshToken(w http.ResponseWriter, r *http.Request) {
 		userId := claims["id"].(string)
 		clientId := claims["client_id"].(string)
 		o := Owner{Id: userId}
-		errRole, role := o.getOwnerRoleById()
-		if errRole != nil {
+		role, jti, err := o.getOwnerRoleAndJtiById()
+		if err != nil {
 			e := &errorResponse{Error: "invalid_grant"}
 			js, _ := json.Marshal(e)
 			jsonResponse(js, w, http.StatusBadRequest)
@@ -175,6 +176,7 @@ func handlerAuthCodeRefreshToken(w http.ResponseWriter, r *http.Request) {
 			UserId:   userId,
 			ClientId: clientId,
 			UserRole: role,
+			UserJti:  jti,
 		}
 
 		response := fillTokensResponse(d)
@@ -196,6 +198,7 @@ func fillTokensResponse(data Data) tokensResponse {
 	claims["role"] = data.UserRole
 	claims["id"] = data.UserId
 	claims["client_id"] = data.ClientId
+	claims["jti"] = data.UserJti
 	claims["exp"] = time.Now().Add(time.Second * time.Duration(*AccessTokenTTL)).Unix()
 	accessTokenString, _ := accessToken.SignedString([]byte(*AccessTokenSecret))
 
@@ -204,6 +207,7 @@ func fillTokensResponse(data Data) tokensResponse {
 	claims["type"] = "refresh_token"
 	claims["id"] = data.UserId
 	claims["client_id"] = data.ClientId
+	claims["jti"] = data.UserJti
 	claims["exp"] = time.Now().Add(time.Hour * 24 * 365).Unix()
 	refreshTokenString, _ := refreshToken.SignedString([]byte(*RefreshTokenSecret))
 
