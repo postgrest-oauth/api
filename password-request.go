@@ -30,7 +30,6 @@ func handlerPassRequestGet(w http.ResponseWriter, r *http.Request) {
 
 func handlerPassRequestPost(w http.ResponseWriter, r *http.Request) {
 	ClearSession(w)
-	s := r.RequestURI
 	code := generateRandomNumbers(9)
 
 	data := &Page{
@@ -38,7 +37,6 @@ func handlerPassRequestPost(w http.ResponseWriter, r *http.Request) {
 			Username:         r.FormValue("username"),
 			VerificationCode: code,
 		},
-		Query: template.URL(s[18:]),
 	}
 	_, id := data.Owner.requestPassword()
 
