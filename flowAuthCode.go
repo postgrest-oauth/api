@@ -165,9 +165,23 @@ func handlerAuthCodeRefreshToken(w http.ResponseWriter, r *http.Request) {
 	if claims, ok := refreshToken.Claims.(jwt.MapClaims); ok && refreshToken.Valid && claims["type"] == "refresh_token" {
 		userId := claims["id"].(string)
 		clientId := claims["client_id"].(string)
+		claimsJti := claims["jti"].(string)
+		claimsRole := claims["role"].(string)
 		o := Owner{Id: userId}
 		role, jti, err := o.getOwnerRoleAndJtiById()
 		if err != nil {
+			e := &errorResponse{Error: "invalid_grant"}
+			js, _ := json.Marshal(e)
+			jsonResponse(js, w, http.StatusBadRequest)
+			return
+		}
+		if role != claimsRole {
+			e := &errorResponse{Error: "invalid_grant"}
+			js, _ := json.Marshal(e)
+			jsonResponse(js, w, http.StatusBadRequest)
+			return
+		}
+		if jti != claimsJti {
 			e := &errorResponse{Error: "invalid_grant"}
 			js, _ := json.Marshal(e)
 			jsonResponse(js, w, http.StatusBadRequest)
@@ -208,6 +222,7 @@ func fillTokensResponse(data Data) tokensResponse {
 	claims["type"] = "refresh_token"
 	claims["id"] = data.UserId
 	claims["client_id"] = data.ClientId
+	claims["role"] = data.UserRole
 	claims["jti"] = data.UserJti
 	claims["exp"] = time.Now().Add(time.Hour * 24 * 365).Unix()
 	refreshTokenString, _ := refreshToken.SignedString([]byte(*RefreshTokenSecret))
