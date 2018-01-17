@@ -32,19 +32,18 @@ func handlerPassRequestPost(w http.ResponseWriter, r *http.Request) {
 	ClearSession(w)
 	s := r.RequestURI
 	code := generateRandomNumbers(9)
+	route, _ := Router.Get("verify-pass").URL("code", code)
 
 	data := &Page{
 		Owner: Owner{
 			Username:         r.FormValue("username"),
 			VerificationCode: code,
+			VerificationRoute: route.String(),
 		},
 		Query: template.URL(s[18:]),
 	}
 	_, id := data.Owner.requestPassword()
 
-	route, _ := Router.Get("verify-pass").URL("code", code)
-	routeNoCode, _ := Router.Get("verify-pass-no-code").URL()
-	data.Owner.VerificationRoute = route.String()
 	if id != "" {
 		log.Printf("password reset route for user '%s' is: %s", id, route.String())
 		PassResetStorage.Set(code, id, cache.DefaultExpiration)
@@ -53,6 +52,7 @@ func handlerPassRequestPost(w http.ResponseWriter, r *http.Request) {
 	}
 	refUrl, _ := url.Parse(r.Referer())
 	rawQuery := refUrl.RawQuery
+	routeNoCode, _ := Router.Get("verify-pass-no-code").URL()
 	http.Redirect(w, r, routeNoCode.String()+"?"+rawQuery, 302)
 
 	return
