@@ -2,17 +2,18 @@ package main
 
 import (
 	"errors"
-	"flag"
 	"html/template"
 	"log"
 	"net/http"
 	"os"
 
+	"github.com/caarlos0/env"
 	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
 	"github.com/patrickmn/go-cache"
 	"github.com/rs/cors"
 	"time"
+	"fmt"
 )
 
 type Page struct {
@@ -22,7 +23,9 @@ type Page struct {
 	VerificationCode string
 }
 
-var ValidateRedirectURI = flag.Bool("validateRedirectURI", true, "Whether validate redirect URI or not. Handy for development")
+var globalConfig struct {
+	ValidateRedirectURI bool `env:"OAUTH_VALIDATE_REDIRECT_URI" envDefault:"true"`
+}
 
 var tmpl *template.Template
 var templatePath = "./templates/"
@@ -42,7 +45,7 @@ func handlerLogout(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if *ValidateRedirectURI == true {
+	if globalConfig.ValidateRedirectURI == true {
 		if len(redirectUriRequest) > 0 && redirectUri != redirectUriRequest {
 			err = errors.New("access denied")
 			log.Print(err)
@@ -66,12 +69,9 @@ func handlerFavicon(w http.ResponseWriter, r *http.Request) {
 
 func main() {
 	log.Println("Started!")
-	flag.Parse()
-
-	blockKeyLength := len(*cookieBlockKey)
-
-	if blockKeyLength != 16 && blockKeyLength != 24 && blockKeyLength != 32 {
-		log.Panic("OAUTH_COOKIE_BLOCK_KEY length should be 16, 24 or 32!")
+	err := env.Parse(&globalConfig)
+	if err != nil {
+		log.Printf("%+v\n", err)
 	}
 
 	tmpl = template.Must(template.ParseFiles(

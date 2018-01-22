@@ -1,15 +1,32 @@
 package main
 
 import (
-	"flag"
+	"github.com/caarlos0/env"
 	"github.com/gorilla/securecookie"
 	"log"
 	"net/http"
 )
 
-var cookieHashKey = flag.String("cookieHashKey", "supersecret", "Hash key for cookie creation. 64 random symbols recommended")
-var cookieBlockKey = flag.String("cookieBlockKey", "16charssecret!!!", "Block key for cookie creation. 16, 24 or 32 random symbols are valid")
-var cookieHandler = securecookie.New([]byte(*cookieHashKey), []byte(*cookieBlockKey))
+var sessionConfig struct {
+	CookieHashKey  string `env:"OAUTH_COOKIE_HASH_KEY" envDefault:"supersecret"`
+	CookieBlockKey string `env:"OAUTH_COOKIE_BLOCK_KEY" envDefault:"16charssecret!!!"`
+}
+var cookieHandler *securecookie.SecureCookie
+
+func init() {
+
+	err := env.Parse(&sessionConfig)
+	if err != nil {
+		log.Printf("%+v\n", err)
+	}
+
+	cookieHandler = securecookie.New([]byte(sessionConfig.CookieHashKey), []byte(sessionConfig.CookieBlockKey))
+
+	blockKeyLength := len(sessionConfig.CookieBlockKey)
+	if blockKeyLength != 16 && blockKeyLength != 24 && blockKeyLength != 32 {
+		log.Panic("COOKIE_BLOCK_KEY length should be 16, 24 or 32!")
+	}
+}
 
 func SetSession(id string, role string, jti string, response http.ResponseWriter) {
 	value := map[string]string{"id": id, "role": role, "jti": jti}
