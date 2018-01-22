@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"log"
 
-	"flag"
+	"github.com/caarlos0/env"
 	_ "github.com/lib/pq"
 )
 
@@ -19,8 +19,16 @@ type Owner struct {
 	VerificationRoute string
 }
 
-var dbConnString = flag.String("dbConnString", "postgres://user:pass@localhost:5432/test?sslmode=disable",
-	"Database connection string")
+var sqlConfig struct {
+	DbConnString string `env:"OAUTH_DB_CONN_STRING" envDefault:"postgres://user:pass@localhost:5432/test?sslmode=disable"`
+}
+
+func init() {
+	err := env.Parse(&sqlConfig)
+	if err != nil {
+		log.Printf("%+v\n", err)
+	}
+}
 
 func (a *Owner) create() (id string, role string, jti string, err error) {
 	db, err := dbConnect()
@@ -167,5 +175,5 @@ func (c *Client) check() (resErr error, redirectUri string) {
 }
 
 func dbConnect() (*sql.DB, error) {
-	return sql.Open("postgres", *dbConnString)
+	return sql.Open("postgres", sqlConfig.DbConnString)
 }

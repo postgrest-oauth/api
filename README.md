@@ -1,28 +1,51 @@
 README
 ------
 
-Running
-=======
+Environment Variables
+=====================
 
-```
-$ ./postgrest-oauth-server -h
-  2018/01/03 21:35:54 Started!
-  Usage of ./postgrest-oauth-server:
-    -accessTokenJWTSecret string
-      	Secret key for generating JWT access tokens (default "morethan32symbolssecretkey!!!!!!")
-    -accessTokenTTL int
-      	Access token TTL in seconds (default 7200)
-    -cookieBlockKey string
-      	Block key for cookie creation. 16, 24 or 32 random symbols are valid (default "16charssecret!!!")
-    -cookieHashKey string
-      	Hash key for cookie creation. 64 random symbols recommended (default "supersecret")
-    -dbConnString string
-      	Database connection string (default "postgres://user:pass@localhost:5432/test?sslmode=disable")
-    -refreshTokenJWTSecret string
-      	Secret key for generating JWT refresh tokens (default "notlesshan32symbolssecretkey!!!!")
-    -validateRedirectURI
-      	Whether validate redirect URI or not. Handy for development (default true)
-```
+**OAUTH_DB_CONN_STRING**
+
+Default: "postgres://user:pass@postgresql:5432/test?sslmode=disable"
+
+See http://www.postgresql.org/docs/current/static/libpq-connect.html#LIBPQ-CONNSTRING for more information about connection string parameters.
+
+**OAUTH_ACCESS_TOKEN_JWT_SECRET**
+
+Default: "morethan32symbolssecretkey!!!!!!"
+
+Random string. Should be >= to 32 symbols. This is important.
+
+**OAUTH_ACCESS_TOKEN_TTL=7200**
+
+Default: 7200
+
+Access token life cycle in seconds
+
+**OAUTH_REFRESH_TOKEN_JWT_SECRET**
+
+Default: "notlesshan32symbolssecretkey!!!!"
+
+Random string. Should be >= to 32 symbols. This is important.
+
+**OAUTH_COOKIE_HASH_KEY**
+
+Default: "supersecret"
+
+Random string.
+
+**OAUTH_COOKIE_BLOCK_KEY**
+
+Default: "16charssecret!!!"
+
+Random string. Should be equal to 16, 24 or 32 symbols. This is important.
+
+
+**OAUTH_VALIDATE_REDIRECT_URI**
+
+Default: true
+
+This setting should be `true` when you use this in production. When set to `false` you can use any **redirect_uri**. Handy for development. 
 
 Testing with Newman
 ===================
