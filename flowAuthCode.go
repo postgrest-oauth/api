@@ -8,33 +8,22 @@ import (
 	"time"
 
 	"fmt"
-	"github.com/caarlos0/env"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gorilla/mux"
 	"github.com/patrickmn/go-cache"
 )
 
-type Data struct {
-	ClientId string
-	UserId   string
-	UserRole string
-	UserJti  string
-}
-
-var flowAuthCodeConfig struct {
-	AccessTokenSecret  string `env:"OAUTH_ACCESS_TOKEN_SECRET" envDefault:"morethan32symbolssecretkey!!!!!!"`
-	AccessTokenTTL     int    `env:"OAUTH_ACCESS_TOKEN_TTL" envDefault:"7200"`
-	RefreshTokenSecret string `env:"OAUTH_REFRESH_TOKEN_SECRET" envDefault:"notlesshan32symbolssecretkey!!!!"`
+type AuthCodeData struct {
+	ClientId   string
+	ClientType string
+	UserId     string
+	UserRole   string
+	UserJti    string
 }
 
 var Storage = cache.New(10*time.Minute, 20*time.Minute)
 
 func init() {
-	err := env.Parse(&flowAuthCodeConfig)
-	if err != nil {
-		log.Printf("%+v\n", err)
-	}
-
 	Router.HandleFunc("/authorize", handlerAuthCode).
 		Methods("GET").
 		Queries("response_type", "code", "client_id", "{client_id}")
@@ -77,7 +66,7 @@ func handlerAuthCode(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if globalConfig.ValidateRedirectURI == true {
+	if authCodeConfig.ValidateRedirectURI == true {
 		if len(redirectUriRequest) > 0 && redirectUri != redirectUriRequest {
 			err = errors.New("access denied")
 			log.Print(err)
@@ -98,7 +87,7 @@ func handlerAuthCode(w http.ResponseWriter, r *http.Request) {
 
 	code := generateRandomString(24)
 
-	data := &Data{ClientId: clientId, UserId: uId, UserRole: uRole, UserJti: uJti}
+	data := &AuthCodeData{ClientId: clientId, UserId: uId, UserRole: uRole, UserJti: uJti, ClientType: "public"}
 
 	Storage.Set(code, *data, cache.DefaultExpiration)
 
@@ -111,25 +100,13 @@ func handlerAuthCode(w http.ResponseWriter, r *http.Request) {
 	return
 }
 
-type tokensResponse struct {
-	AccessToken  string `json:"access_token"`
-	RefreshToken string `json:"refresh_token"`
-	TokenType    string `json:"token_type"`
-}
-
-type errorResponse struct {
-	Error            string `json:"error"`
-	ErrorDescription string `json:"error_description,omitempty"`
-	State            string `json:"state,omitempty"`
-}
-
 func handlerAuthCodeToken(w http.ResponseWriter, r *http.Request) {
 	code := r.FormValue("code")
 	clientId := r.FormValue("client_id")
 
 	if data, ok := Storage.Get(code); ok {
-		if data.(Data).ClientId == clientId {
-			response := fillTokensResponse(data.(Data))
+		if data.(AuthCodeData).ClientId == clientId {
+			response := fillAuthFlowResponse(data.(AuthCodeData))
 			js, _ := json.Marshal(response)
 			Storage.Delete(code)
 			jsonResponse(js, w, http.StatusOK)
@@ -155,7 +132,7 @@ func handlerAuthCodeRefreshToken(w http.ResponseWriter, r *http.Request) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
 		}
-		return []byte(flowAuthCodeConfig.RefreshTokenSecret), nil
+		return []byte(flowConfig.RefreshTokenSecret), nil
 	})
 
 	if err != nil {
@@ -192,14 +169,14 @@ func handlerAuthCodeRefreshToken(w http.ResponseWriter, r *http.Request) {
 			jsonResponse(js, w, http.StatusBadRequest)
 			return
 		}
-		d := Data{
+		d := AuthCodeData{
 			UserId:   userId,
 			ClientId: clientId,
 			UserRole: role,
 			UserJti:  jti,
 		}
 
-		response := fillTokensResponse(d)
+		response := fillAuthFlowResponse(d)
 		js, _ := json.Marshal(response)
 		jsonResponse(js, w, http.StatusOK)
 		return
@@ -211,26 +188,28 @@ func handlerAuthCodeRefreshToken(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func fillTokensResponse(data Data) tokensResponse {
+func fillAuthFlowResponse(data AuthCodeData) tokensResponse {
 	accessToken := jwt.New(jwt.SigningMethodHS256)
 	claims := accessToken.Claims.(jwt.MapClaims)
 	claims["type"] = "access_token"
 	claims["role"] = data.UserRole
 	claims["id"] = data.UserId
 	claims["client_id"] = data.ClientId
+	claims["client_type"] = data.ClientType
 	claims["jti"] = data.UserJti
-	claims["exp"] = time.Now().Add(time.Second * time.Duration(flowAuthCodeConfig.AccessTokenTTL)).Unix()
-	accessTokenString, _ := accessToken.SignedString([]byte(flowAuthCodeConfig.AccessTokenSecret))
+	claims["exp"] = time.Now().Add(time.Second * time.Duration(flowConfig.AccessTokenTTL)).Unix()
+	accessTokenString, _ := accessToken.SignedString([]byte(flowConfig.AccessTokenSecret))
 
 	refreshToken := jwt.New(jwt.SigningMethodHS256)
 	claims = refreshToken.Claims.(jwt.MapClaims)
 	claims["type"] = "refresh_token"
 	claims["id"] = data.UserId
 	claims["client_id"] = data.ClientId
+	claims["client_type"] = data.ClientType
 	claims["role"] = data.UserRole
 	claims["jti"] = data.UserJti
 	claims["exp"] = time.Now().Add(time.Hour * 24 * 365).Unix()
-	refreshTokenString, _ := refreshToken.SignedString([]byte(flowAuthCodeConfig.RefreshTokenSecret))
+	refreshTokenString, _ := refreshToken.SignedString([]byte(flowConfig.RefreshTokenSecret))
 
 	response := tokensResponse{
 		AccessToken:  accessTokenString,
@@ -238,10 +217,4 @@ func fillTokensResponse(data Data) tokensResponse {
 		TokenType:    "bearer",
 	}
 	return response
-}
-
-func jsonResponse(js []byte, w http.ResponseWriter, code int) {
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(code)
-	w.Write(js)
 }
