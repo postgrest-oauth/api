@@ -156,8 +156,8 @@ func (c *Client) check() (resErr error, redirectUri string) {
 	db, err := dbConnect()
 	defer db.Close()
 
-	query := fmt.Sprintf("SELECT redirect_uri::text FROM oauth2.check_client('%s', '%s')",
-		c.Id, c.Secret)
+	query := fmt.Sprintf("SELECT redirect_uri::text FROM oauth2.check_client('%s')",
+		c.Id)
 	var uRedirectUri sql.NullString
 	err = db.QueryRow(query).Scan(&uRedirectUri)
 
@@ -172,6 +172,28 @@ func (c *Client) check() (resErr error, redirectUri string) {
 
 	resErr = err
 	return resErr, redirectUri
+}
+
+func (c *Client) check_secret() (resErr error, ctype string) {
+	db, err := dbConnect()
+	defer db.Close()
+
+	query := fmt.Sprintf("SELECT type::varchar FROM oauth2.check_client_secret('%s', '%s')",
+		c.Id, c.Secret)
+	var uType sql.NullString
+	err = db.QueryRow(query).Scan(&uType)
+
+	if err != nil {
+		log.Print(err)
+		err = fmt.Errorf("something bad happened. Client ID: '%s'", c.Id)
+	} else if uType.Valid {
+		ctype = uType.String
+	} else {
+		err = fmt.Errorf("wrong client id '%s'", c.Id)
+	}
+
+	resErr = err
+	return resErr, ctype
 }
 
 func dbConnect() (*sql.DB, error) {
