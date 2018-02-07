@@ -1,12 +1,12 @@
 package main
 
 import (
-	"log"
-	"net/http"
 	"errors"
-	"html/template"
 	"github.com/caarlos0/env"
 	"github.com/patrickmn/go-cache"
+	"html/template"
+	"log"
+	"net/http"
 	"time"
 )
 

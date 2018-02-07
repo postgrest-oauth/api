@@ -35,8 +35,8 @@ func handlerPassRequestPost(w http.ResponseWriter, r *http.Request) {
 
 	data := &Page{
 		Owner: Owner{
-			Username:         r.FormValue("username"),
-			VerificationCode: code,
+			Username:          r.FormValue("username"),
+			VerificationCode:  code,
 			VerificationRoute: route.String(),
 		},
 	}

@@ -34,7 +34,7 @@ func handlerClientCredentialsToken(w http.ResponseWriter, r *http.Request) {
 	clientSecret := r.FormValue("client_secret")
 
 	c := Client{
-		Id: clientId,
+		Id:     clientId,
 		Secret: clientSecret,
 	}
 
@@ -53,7 +53,7 @@ func handlerClientCredentialsToken(w http.ResponseWriter, r *http.Request) {
 	} else {
 		data := ClientCredentialsData{
 			ClientRole: "msrv-" + clientId,
-			ClientId: clientId,
+			ClientId:   clientId,
 			ClientType: ctype,
 		}
 		response := fillClientCredentialsResponse(data)
@@ -73,8 +73,8 @@ func fillClientCredentialsResponse(data ClientCredentialsData) tokensResponse {
 	accessTokenString, _ := accessToken.SignedString([]byte(flowConfig.AccessTokenSecret))
 
 	response := tokensResponse{
-		AccessToken:  accessTokenString,
-		TokenType:    "bearer",
+		AccessToken: accessTokenString,
+		TokenType:   "bearer",
 	}
 	return response
 }
