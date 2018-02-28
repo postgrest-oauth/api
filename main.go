@@ -13,6 +13,8 @@ import (
 var Router = mux.NewRouter().StrictSlash(true)
 
 func main() {
+	Router.PathPrefix("/static/").Handler(http.StripPrefix("/static/", http.FileServer(http.Dir("./static/"))))
+
 	log.Println("Started!")
 	corsRouter := cors.AllowAll().Handler(Router)
 	loggedRouter := handlers.LoggingHandler(os.Stdout, corsRouter)
