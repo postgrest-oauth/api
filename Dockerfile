@@ -19,4 +19,5 @@ RUN apk --no-cache add ca-certificates
 WORKDIR /root/
 COPY --from=0 /go/src/github.com/wildsurfer/postgrest-oauth-server/postgrest-oauth-server .
 COPY --from=0 /go/src/github.com/wildsurfer/postgrest-oauth-server/templates/ ./templates
+COPY --from=0 /go/src/github.com/wildsurfer/postgrest-oauth-server/static/ ./static
 CMD ./postgrest-oauth-server
