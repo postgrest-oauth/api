@@ -35,4 +35,5 @@ before_install:
 
 script:
 
+ - ./test.sh
 
