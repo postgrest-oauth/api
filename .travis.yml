@@ -33,9 +33,6 @@ before_install:
 
   - npm install newman --global
 
-  - cd example
-
 script:
 
-  - ./run.sh
 
