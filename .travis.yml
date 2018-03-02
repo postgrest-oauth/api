@@ -31,6 +31,8 @@ before_install:
 
   - sudo apt-get install npm
 
+  - npm -v
+
   - npm install newman --global
 
 script:
