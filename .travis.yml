@@ -29,7 +29,7 @@ before_install:
 
   - docker-compose --version
 
-  - wget -qO- https://deb.nodesource.com/setup_4.x | sudo bash -
+  - wget -qO- https://deb.nodesource.com/setup_8.x | sudo bash -
 
   - sudo apt-get install nodejs
 
