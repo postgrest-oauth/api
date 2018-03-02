@@ -33,7 +33,7 @@ before_install:
 
   - sudo apt-get install nodejs
 
-  - npm install newman --global
+  - sudo npm install newman --global
 
 script:
 
