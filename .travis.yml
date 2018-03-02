@@ -29,6 +29,8 @@ before_install:
 
   - docker-compose --version
 
+  - sudo apt-get install nodejs
+
   - sudo apt-get install npm
 
   - npm -v
