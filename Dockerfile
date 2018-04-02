@@ -19,11 +19,5 @@ RUN apk --no-cache add ca-certificates
 WORKDIR /root/
 COPY --from=0 /go/src/github.com/wildsurfer/postgrest-oauth-server/postgrest-oauth-server .
 COPY --from=0 /go/src/github.com/wildsurfer/postgrest-oauth-server/templates/ ./templates
-CMD ./postgrest-oauth-server \
-    -dbConnString "${OAUTH_DB_CONN_STRING}" \
-    -accessTokenJWTSecret "${OAUTH_ACCESS_TOKEN_JWT_SECRET}" \
-    -accessTokenTTL ${OAUTH_ACCESS_TOKEN_TTL} \
-    -refreshTokenJWTSecret "${OAUTH_REFRESH_TOKEN_JWT_SECRET}" \
-    -cookieBlockKey "${OAUTH_COOKIE_BLOCK_KEY}" \
-    -cookieHashKey "${OAUTH_COOKIE_HASH_KEY}" \
-    -validateRedirectURI=${OAUTH_VALIDATE_REDIRECT_URI}
+COPY --from=0 /go/src/github.com/wildsurfer/postgrest-oauth-server/static/ ./static
+CMD ./postgrest-oauth-server

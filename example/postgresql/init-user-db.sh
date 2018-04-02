@@ -56,17 +56,25 @@ AS \$\$
 CREATE TABLE IF NOT EXISTS
     oauth2.clients (
       id                  text NOT NULL PRIMARY KEY,
-      secret              UUID NOT NULL DEFAULT gen_random_uuid(),
-      redirect_uri        text NOT NULL UNIQUE
+      secret              text DEFAULT gen_random_uuid()::text,
+      redirect_uri        text DEFAULT NULL UNIQUE,
+      type                varchar NOT NULL DEFAULT 'public'
     );
 
-INSERT INTO oauth2.clients(id, redirect_uri) VALUES('mobile', 'https://mobile.uri');
-INSERT INTO oauth2.clients(id, redirect_uri) VALUES('spa', 'https://spa.uri');
+INSERT INTO oauth2.clients(id, redirect_uri, type) VALUES('mobile', 'https://mobile.uri', 'public');
+INSERT INTO oauth2.clients(id, redirect_uri, type) VALUES('spa', 'https://spa.uri', 'public');
+INSERT INTO oauth2.clients(id, secret, type) VALUES('worker', 'secret', 'confidential');
 
-CREATE OR REPLACE FUNCTION oauth2.check_client(client_id text, client_secret text, OUT redirect_uri text)
+CREATE OR REPLACE FUNCTION oauth2.check_client(client_id text, OUT redirect_uri text)
 AS \$\$
 SELECT redirect_uri FROM oauth2.clients
     WHERE id = check_client.client_id;
+\$\$ LANGUAGE SQL;
+
+CREATE OR REPLACE FUNCTION oauth2.check_client_secret(client_id text, client_secret text, OUT type varchar)
+AS \$\$
+SELECT type FROM oauth2.clients
+    WHERE id = check_client_secret.client_id AND secret = check_client_secret.client_secret;
 \$\$ LANGUAGE SQL;
 
 CREATE SCHEMA api;
@@ -78,6 +86,14 @@ CREATE OR REPLACE VIEW api.me AS
     role
  FROM oauth2.owners WHERE
     oauth2.owners.id = current_setting('request.jwt.claim.id', true)::int
+ WITH LOCAL CHECK OPTION;
+
+CREATE OR REPLACE VIEW api.client AS
+ SELECT
+    id,
+    type
+ FROM oauth2.clients WHERE
+    oauth2.clients.id = current_setting('request.jwt.claim.client_id', true)::varchar
  WITH LOCAL CHECK OPTION;
 
 -------------
@@ -93,5 +109,10 @@ CREATE ROLE "member" NOLOGIN;
 GRANT "member" TO "authenticator";
 GRANT USAGE ON SCHEMA api TO "member";
 GRANT SELECT ON TABLE api.me TO "member";
+
+CREATE ROLE "msrv-worker" NOLOGIN;
+GRANT "msrv-worker" TO "authenticator";
+GRANT USAGE ON SCHEMA api TO "msrv-worker";
+GRANT SELECT ON TABLE api.client TO "msrv-worker";
 
 EOSQL

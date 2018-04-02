@@ -36,10 +36,10 @@ func handlerSignupPost(w http.ResponseWriter, r *http.Request) {
 	route, _ := Router.Get("verify").URL("code", code)
 	data := &Page{
 		Owner: Owner{
-			Email:            r.FormValue("email"),
-			Phone:            r.FormValue("phone"),
-			Password:         r.FormValue("password"),
-			VerificationCode: code,
+			Email:             r.FormValue("email"),
+			Phone:             r.FormValue("phone"),
+			Password:          r.FormValue("password"),
+			VerificationCode:  code,
 			VerificationRoute: route.String(),
 		},
 		Query: template.URL(s[8:]),

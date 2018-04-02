@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"log"
 
-	"flag"
+	"github.com/caarlos0/env"
 	_ "github.com/lib/pq"
 )
 
@@ -19,8 +19,16 @@ type Owner struct {
 	VerificationRoute string
 }
 
-var dbConnString = flag.String("dbConnString", "postgres://user:pass@localhost:5432/test?sslmode=disable",
-	"Database connection string")
+var sqlConfig struct {
+	DbConnString string `env:"OAUTH_DB_CONN_STRING" envDefault:"postgres://user:pass@localhost:5432/test?sslmode=disable"`
+}
+
+func init() {
+	err := env.Parse(&sqlConfig)
+	if err != nil {
+		log.Printf("%+v\n", err)
+	}
+}
 
 func (a *Owner) create() (id string, role string, jti string, err error) {
 	db, err := dbConnect()
@@ -148,8 +156,8 @@ func (c *Client) check() (resErr error, redirectUri string) {
 	db, err := dbConnect()
 	defer db.Close()
 
-	query := fmt.Sprintf("SELECT redirect_uri::text FROM oauth2.check_client('%s', '%s')",
-		c.Id, c.Secret)
+	query := fmt.Sprintf("SELECT redirect_uri::text FROM oauth2.check_client('%s')",
+		c.Id)
 	var uRedirectUri sql.NullString
 	err = db.QueryRow(query).Scan(&uRedirectUri)
 
@@ -166,6 +174,28 @@ func (c *Client) check() (resErr error, redirectUri string) {
 	return resErr, redirectUri
 }
 
+func (c *Client) check_secret() (resErr error, ctype string) {
+	db, err := dbConnect()
+	defer db.Close()
+
+	query := fmt.Sprintf("SELECT type::varchar FROM oauth2.check_client_secret('%s', '%s')",
+		c.Id, c.Secret)
+	var uType sql.NullString
+	err = db.QueryRow(query).Scan(&uType)
+
+	if err != nil {
+		log.Print(err)
+		err = fmt.Errorf("something bad happened. Client ID: '%s'", c.Id)
+	} else if uType.Valid {
+		ctype = uType.String
+	} else {
+		err = fmt.Errorf("wrong client id '%s'", c.Id)
+	}
+
+	resErr = err
+	return resErr, ctype
+}
+
 func dbConnect() (*sql.DB, error) {
-	return sql.Open("postgres", *dbConnString)
+	return sql.Open("postgres", sqlConfig.DbConnString)
 }
