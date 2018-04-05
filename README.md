@@ -1,7 +1,7 @@
 README
 ------
 
-[![Build Status](https://travis-ci.org/andreychuk/postgrest-oauth-server.svg?branch=master)](https://travis-ci.org/andreychuk/postgrest-oauth-server)
+[![Build Status](https://travis-ci.org/wildsurfer/postgrest-oauth-server.svg?branch=master)](https://travis-ci.org/wildsurfer/postgrest-oauth-server)
 
 Environment Variables
 =====================
