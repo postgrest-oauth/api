@@ -40,12 +40,37 @@ Default: "16charssecret!!!"
 
 Random string. Should be equal to 16, 24 or 32 symbols. This is important.
 
-
 **OAUTH_VALIDATE_REDIRECT_URI**
 
 Default: true
 
 This setting should be `true` when you use this in production. When set to `false` you can use any **redirect_uri**. Handy for development. 
+
+**OAUTH_FB_CLIENT_ID**
+
+Default: ""
+
+Facebook client id
+
+**OAUTH_FB_CLIENT_SECRET**
+
+Default: ""
+
+Facebook client secret
+
+**OAUTH_FB_REDIRECT_URI_HOST**
+
+Default: "http://localhost:3684"
+
+Facebook redirect URI Host
+
+**OAUTH_FB_API_VERSION**
+
+Default: "v2.12"
+
+Facebook API version
+
+
 
 Testing with Newman
 ===================

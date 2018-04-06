@@ -92,6 +92,7 @@
 </head>
 
 <body>
+<div id="fb-root"></div>
     <div class="mui-container">
         <ul class="mui-tabs__bar" id="myTab">
             <li class="mui--is-active"><a data-mui-toggle="tab" data-mui-controls="signin" href="/signin?{{.Query}}">SignIn</a>
@@ -118,6 +119,9 @@
                     </div>
                     <div class="button-justify">
                         <button class="mui-btn mui-btn--raised mui-btn--primary" type="submit">Submit</button>
+                    </div>
+                    <div class="button-justify">
+                        <a class="mui-btn mui-btn--raised mui-btn--primary" href="/facebook/login">Facebook</a>
                     </div>
                     <div class="button-justify">
                         <a href="/password/request?{{.Query}}">Forgot your password?</a>
