@@ -6,6 +6,12 @@ RUN apk add --no-cache openssl git && \
     chmod +x /usr/bin/dep /usr/bin/dep && \
     dep ensure -vendor-only && go build
 
+FROM node:9.10.1-alpine
+WORKDIR /app
+COPY ./react-app /app
+RUN yarn install
+RUN yarn build
+
 FROM alpine:3.6
 MAINTAINER Ivan Kuznetsov <kuzma.wm@gmail.com>
 ENV OAUTH_DB_CONN_STRING="postgres://user:pass@postgresql:5432/test?sslmode=disable" \
@@ -20,4 +26,5 @@ WORKDIR /root/
 COPY --from=0 /go/src/github.com/wildsurfer/postgrest-oauth-server/postgrest-oauth-server .
 COPY --from=0 /go/src/github.com/wildsurfer/postgrest-oauth-server/templates/ ./templates
 COPY --from=0 /go/src/github.com/wildsurfer/postgrest-oauth-server/static/ ./static
+COPY --from=1 /app/build ./ui
 CMD ./postgrest-oauth-server

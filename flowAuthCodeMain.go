@@ -46,6 +46,7 @@ func init() {
 	Router.HandleFunc("/signup", handlerSignupPost).Methods("POST")
 
 	Router.PathPrefix("/static/").Handler(http.StripPrefix("/static/", http.FileServer(http.Dir("./static/"))))
+	Router.PathPrefix("/ui/").Handler(http.StripPrefix("/ui/", http.FileServer(http.Dir("./ui/"))))
 }
 
 func handlerLogout(w http.ResponseWriter, r *http.Request) {
