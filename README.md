@@ -29,7 +29,7 @@ Submitting the form is sending POST request to `/signup?response_type=code&clien
 
 **On success**
 
-_Soft redirect_ to `/signin?response_type=code&client_id={client_id}&state={state}&redirect_uri={redirect_uri}`
+_Soft redirect_ to `/verify`
 
 **On failure**
 
@@ -47,6 +47,8 @@ Fields:
 - password
 
 Submitting the form is sending POST request to `/signin?response_type=code&client_id={client_id}&state={state}&redirect_uri={redirect_uri}`
+
+Response to POST returns COOKIE. This cookie is needed for `/authorize` route to work properly.
 
 **On success**
 
@@ -75,6 +77,46 @@ Success message should be displayed
 **On failure**
 
 Error message should be displayed
+
+`/password/request`
+-------------------
+
+HTML form for requesting a password reset. 
+
+**Query params:** no
+
+Fields:
+- username
+
+Submitting form is sending POST request to `/password/request`
+
+**On success**
+
+_Soft redirect_ to `/password/reset` route
+
+**On failure**
+
+Error message should be displayed
+
+`/password/reset/{code}`
+-----------------
+
+HTML form for resetting password. When code is present it's pre-inserted into `code` field in form.
+
+Fields:
+- code
+- password
+
+Submitting form is sending POST request to `/password/reset`
+
+**On success**
+
+_Soft redirect_ to `/signin` route
+
+**On failure**
+
+Error message should be displayed
+
 
 Environment Variables
 =====================
