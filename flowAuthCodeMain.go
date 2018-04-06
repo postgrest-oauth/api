@@ -46,7 +46,16 @@ func init() {
 	Router.HandleFunc("/signup", handlerSignupPost).Methods("POST")
 
 	Router.PathPrefix("/static/").Handler(http.StripPrefix("/static/", http.FileServer(http.Dir("./static/"))))
-	Router.PathPrefix("/ui/").Handler(http.StripPrefix("/ui/", http.FileServer(http.Dir("./ui/"))))
+
+	ui := Router.PathPrefix("/ui/").Subrouter()
+	ui.Path("/{before:.*}js{after:.*}").Handler(http.StripPrefix("/ui/", http.FileServer(http.Dir("./ui/"))))
+	ui.PathPrefix("/static/").Handler(http.StripPrefix("/ui/static/", http.FileServer(http.Dir("./ui/static/"))))
+	ui.PathPrefix("/").HandlerFunc(reactHandler)
+
+}
+
+func reactHandler(w http.ResponseWriter, r *http.Request) {
+	http.ServeFile(w, r, "./ui/index.html")
 }
 
 func handlerLogout(w http.ResponseWriter, r *http.Request) {
