@@ -15,7 +15,6 @@ function InputMask() {
 }
 
 export default class Signup extends Component {
-
   render() {
     return (
       <form style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
