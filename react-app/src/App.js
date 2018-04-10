@@ -14,8 +14,8 @@ export default class App extends Component {
           <Card raised = {true} style = {{ width: "420px", padding: "20px 50px" }}>
             <Switch>
               <Route exact path="/signin" component={Login}/>
-              <Route path="/passwordrequest" component={PasswordRequest}/>
-              <Route path="/passwordreset" component={PasswordReset}/>
+              <Route path="/password/request" component={PasswordRequest}/>
+              <Route path="/password/reset" component={PasswordReset}/>
               <Route path="/verify" component={Verify}/>
             </Switch>
           </Card>

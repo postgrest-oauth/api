@@ -17,3 +17,9 @@ body {
 .forget-password-link:hover {
   text-decoration: underline;
 }
+
+.form {
+  display: flex;
+  flex-direction: column; 
+  align-items: center; 
+}

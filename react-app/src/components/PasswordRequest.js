@@ -1,21 +1,44 @@
 import React, { Component } from 'react';
 import { TextField, Button } from 'material-ui';
-import { Link } from 'react-router-dom';
+import { Redirect } from 'react-router-dom';
 
 export default class PasswordRequest extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      text: "",
+      isLoaded: false
+    };
+    this.submitForm = this.submitForm.bind(this);
+  };
+
+  submitForm() {
+    let options = { method: "post" }
+    fetch('/ui/password/request', options)
+      .then((response) => {
+          if ( response.ok ) {
+            this.setState({ isLoaded: true });
+          } else {
+            this.setState({ text: "Something went wrong :(" });
+          }
+        }
+      )
+  }
+  
 	render() {
   	return (
-    	<form style = {{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+    	<form className="form">
 				<TextField label="Email or phone" margin="normal" fullWidth required/>
+        <span style={{ color: "red" }}>{this.state.text}</span>
 				<Button 
 					variant="raised" 
 					color="primary"
-					component={Link}
-					to="/passwordreset"
-					style={{ padding:"10px 30px", marginTop:"15px" }}
+          style={{ padding:"10px 30px", marginTop:"15px" }}
+          onClick={this.submitForm}
 				>
 					submit
 				</Button>
+        { this.state.isLoaded ? <Redirect to="/password/reset" push/> : null }
 			</form>
     )
   }
