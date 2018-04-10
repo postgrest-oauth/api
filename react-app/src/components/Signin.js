@@ -6,9 +6,22 @@ export default class Signin extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      text: ""
+      text: "",
+      usernameValue: false,
+      passwordValue: false,
+      isDisabled: () => { 
+        if (this.state.usernameValue === false) {
+          return true
+        } else if (this.state.passwordValue === false) {
+          return true
+        } else {
+          return false
+        }
+      }
     };
     this.submitForm = this.submitForm.bind(this);
+    this.changeUsername = this.changeUsername.bind(this);
+    this.changePassword = this.changePassword.bind(this);
   };
 
   submitForm() {
@@ -22,20 +35,36 @@ export default class Signin extends Component {
           }
         }
       )
-  }
+  };
+
+  changeUsername = (e) => {
+    if ( e.target.value.length > 0 ) {
+      this.setState({ usernameValue: true })
+    } else {
+      this.setState({ usernameValue: false })
+    }
+  };
+
+  changePassword = (e) => {
+    if ( e.target.value.length > 0 ) {
+      this.setState({ passwordValue: true })
+    } else {
+      this.setState({ passwordValue: false })
+    }
+  };
 
   render() {
     return (
       <form className="form">
-        <TextField label="Username" margin="normal" fullWidth required/>
-        <TextField label="Password" margin="normal" type="password" fullWidth required/>
+        <TextField label="Username" margin="normal" onChange={this.changeUsername} fullWidth />
+        <TextField label="Password" margin="normal" onChange={this.changePassword} type="password" fullWidth />
         <span style={{ color: "red" }}>{this.state.text}</span>
         <Button 
           variant="raised" 
           color="primary" 
-          type="submit" 
           style={{ padding:"10px 30px", margin:"15px 0 10px 0" }}
           onClick={this.submitForm}
+          disabled={this.state.isDisabled()}
         >
           submit
         </Button>

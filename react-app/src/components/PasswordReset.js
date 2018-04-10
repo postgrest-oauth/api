@@ -7,9 +7,22 @@ export default class PasswordRequest extends Component {
     super(props);
     this.state = {
       text: "",
-      isLoaded: false
+      isLoaded: false,
+      codeValue: false,
+      passwordValue: false,
+      isDisabled: () => { 
+        if (this.state.codeValue === false) {
+          return true
+        } else if (this.state.passwordValue === false) {
+          return true
+        } else {
+          return false
+        }
+      }
     };
     this.submitForm = this.submitForm.bind(this);
+    this.changeCode = this.changeCode.bind(this);
+    this.changePassword = this.changePassword.bind(this);
   };
 
   submitForm() {
@@ -23,19 +36,36 @@ export default class PasswordRequest extends Component {
           }
         }
       )
-	}
+  }
+  
+  changeCode = (e) => {
+    if ( e.target.value.length > 0 ) {
+      this.setState({ codeValue: true })
+    } else {
+      this.setState({ codeValue: false })
+    }
+  };
+
+  changePassword = (e) => {
+    if ( e.target.value.length > 0 ) {
+      this.setState({ passwordValue: true })
+    } else {
+      this.setState({ passwordValue: false })
+    }
+  };
 	
 	render() {
   	return (
     	<form className="form">
-				<TextField label="Verification code" margin="normal" type="password" fullWidth required/>
-				<TextField label="New password" margin="normal" type="password" fullWidth required/>
+				<TextField label="Verification code" margin="normal" type="password" onChange={this.changeCode} fullWidth />
+				<TextField label="New password" margin="normal" type="password" onChange={this.changePassword} fullWidth />
 				<span style={{ color: "red" }}>{this.state.text}</span>
 				<Button 
 					variant="raised" 
 					color="primary" 
 					style={{ padding:"10px 30px", marginTop:"15px" }}
-					onClick={this.submitForm}
+          onClick={this.submitForm}
+          disabled={this.state.isDisabled()}
 				>
 					submit
 				</Button>
