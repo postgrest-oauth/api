@@ -57,7 +57,7 @@ export default class PasswordRequest extends Component {
 	render() {
   	return (
     	<form className="form">
-				<TextField label="Verification code" margin="normal" type="password" onChange={this.changeCode} fullWidth />
+				<TextField label="Verification code" margin="normal" onChange={this.changeCode} fullWidth />
 				<TextField label="New password" margin="normal" type="password" onChange={this.changePassword} fullWidth />
 				<span style={{ color: "red" }}>{this.state.text}</span>
 				<Button 

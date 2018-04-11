@@ -29,7 +29,7 @@ export default class Signin extends Component {
     fetch('/ui/signin?response_type=code&client_id={client_id}&state={state}&redirect_uri={redirect_uri}', options)
       .then((response) => {
           if ( response.ok ) {
-            window.location.replace('/ui//authorize?response_type=code&client_id={client_id}&state={state}&redirect_uri={redirect_uri}')
+            window.location.replace('/ui/authorize?response_type=code&client_id={client_id}&state={state}&redirect_uri={redirect_uri}')
           } else {
             this.setState({ text: "Something went wrong :(" });
           }
