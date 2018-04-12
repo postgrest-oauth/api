@@ -20,9 +20,9 @@ CREATE TABLE IF NOT EXISTS
       CHECK(email IS NOT NULL OR phone IS NOT NULL)
     );
 
-CREATE OR REPLACE FUNCTION oauth2.create_owner(email text, phone text, password text, verification_code text, verification_route text, OUT id varchar, OUT role varchar, OUT jti varchar)
+CREATE OR REPLACE FUNCTION oauth2.create_owner(email text, phone text, password text, verification_code text, verification_route text, OUT id varchar)
 AS \$\$
-        INSERT INTO oauth2.owners(email, phone, password) VALUES (NULLIF(email, ''), NULLIF(phone, ''), crypt(password, gen_salt('bf'))) RETURNING id::varchar, role, jti::varchar;
+        INSERT INTO oauth2.owners(email, phone, password) VALUES (NULLIF(email, ''), NULLIF(phone, ''), crypt(password, gen_salt('bf'))) RETURNING id::varchar;
 \$\$ LANGUAGE SQL;
 
 CREATE OR REPLACE FUNCTION oauth2.check_owner(username text, password text, OUT id varchar, OUT role varchar, OUT jti varchar)
