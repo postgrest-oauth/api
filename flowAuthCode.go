@@ -81,7 +81,7 @@ func handlerAuthCode(w http.ResponseWriter, r *http.Request) {
 
 	uId, uRole, uJti := GetUser(r)
 	if uId == "" || uRole == "" {
-		http.Redirect(w, r, "/signin?"+r.URL.RawQuery, 302)
+		http.Redirect(w, r, "/ui/signin?"+r.URL.RawQuery, 302)
 		return
 	}
 

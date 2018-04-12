@@ -30,22 +30,22 @@ func init() {
 	}
 }
 
-func (a *Owner) create() (id string, role string, jti string, err error) {
+func (a *Owner) create() (id string, err error) {
 	db, err := dbConnect()
 	defer db.Close()
-	query := fmt.Sprintf("SELECT id::varchar, role::varchar, jti::varchar FROM oauth2.create_owner('%s', '%s', '%s', '%s', '%s')",
+	query := fmt.Sprintf("SELECT id::varchar FROM oauth2.create_owner('%s', '%s', '%s', '%s', '%s')",
 		a.Email, a.Phone, a.Password, a.VerificationCode, a.VerificationRoute)
-	err = db.QueryRow(query).Scan(&id, &role, &jti)
+	err = db.QueryRow(query).Scan(&id)
 
 	switch {
 	case err != nil:
 		log.Print(err)
 		err = fmt.Errorf("looks like owner already exists")
 	default:
-		log.Printf("User created. ID: %s, ROLE: %s\n", id, role)
+		log.Printf("User created. ID: %s\n", id)
 	}
 
-	return id, role, jti, err
+	return id, err
 }
 
 func (a *Owner) check() (id string, role string, jti string, err error) {
@@ -86,7 +86,7 @@ func (a *Owner) verify() (resErr error) {
 	return resErr
 }
 
-func (a *Owner) requestPassword() (resErr error, id string) {
+func (a *Owner) requestPassword() (id string, resErr error) {
 	db, err := dbConnect()
 	defer db.Close()
 
@@ -103,7 +103,7 @@ func (a *Owner) requestPassword() (resErr error, id string) {
 	}
 
 	resErr = err
-	return resErr, id
+	return id, resErr
 }
 
 func (a *Owner) resetPassword() (resErr error) {
@@ -119,7 +119,7 @@ func (a *Owner) resetPassword() (resErr error) {
 		log.Print(err)
 		err = fmt.Errorf("password reset error. USER ID: '%s'", a.Id)
 	default:
-		log.Printf("Password reseted. USER ID: %s", a.Id)
+		log.Printf("password reseted. USER ID: %s", a.Id)
 	}
 
 	resErr = err
