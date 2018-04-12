@@ -6,7 +6,7 @@ import (
 )
 
 func init() {
-	Router.HandleFunc("/ui/verify", handlerVerifyPost).Methods("POST")
+	Router.HandleFunc("/verify", handlerVerifyPost).Methods("POST")
 }
 
 func handlerVerifyPost(w http.ResponseWriter, r *http.Request) {

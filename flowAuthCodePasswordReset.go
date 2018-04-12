@@ -6,7 +6,7 @@ import (
 )
 
 func init() {
-	Router.HandleFunc("/ui/password/reset", handlerPassResetPost).Methods("POST")
+	Router.HandleFunc("/password/reset", handlerPassResetPost).Methods("POST")
 }
 
 func handlerPassResetPost(w http.ResponseWriter, r *http.Request) {

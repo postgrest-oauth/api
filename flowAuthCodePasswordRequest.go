@@ -17,7 +17,7 @@ func handlerPassRequestPost(w http.ResponseWriter, r *http.Request) {
 	owner := Owner{
 		Username:          r.FormValue("username"),
 		VerificationCode:  code,
-		VerificationRoute: "/ui/password/reset/" + code,
+		VerificationRoute: authCodeConfig.OauthCodeUi + "/password/reset/" + code,
 	}
 
 	if id, err := owner.requestPassword(); id != "" && err == nil {

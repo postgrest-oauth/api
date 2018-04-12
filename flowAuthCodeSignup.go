@@ -18,7 +18,7 @@ func handlerSignupPost(w http.ResponseWriter, r *http.Request) {
 		Phone:             r.FormValue("phone"),
 		Password:          r.FormValue("password"),
 		VerificationCode:  code,
-		VerificationRoute: "/ui/verify/" + code,
+		VerificationRoute: authCodeConfig.OauthCodeUi + "/verify/" + code,
 	}
 
 	if id, err := owner.create(); err == nil {

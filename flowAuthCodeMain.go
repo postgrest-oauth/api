@@ -15,7 +15,8 @@ type ErrorResponse struct {
 }
 
 var authCodeConfig struct {
-	ValidateRedirectURI bool `env:"OAUTH_VALIDATE_REDIRECT_URI" envDefault:"true"`
+	ValidateRedirectURI bool   `env:"OAUTH_VALIDATE_REDIRECT_URI" envDefault:"true"`
+	OauthCodeUi         string `env:"OAUTH_CODE_UI" envDefault:"http://localhost:3685"`
 }
 
 var VerifyStorage = cache.New(24*time.Hour, 2*time.Hour)
@@ -28,18 +29,8 @@ func init() {
 		log.Printf("%+v\n", err)
 	}
 
-	Router.HandleFunc("/favicon.ico", handlerFavicon)
 	Router.HandleFunc("/logout", handlerLogout).Methods("GET")
 
-	ui := Router.PathPrefix("/ui/").Subrouter()
-	ui.Path("/{before:.*}js{after:.*}").Handler(http.StripPrefix("/ui/", http.FileServer(http.Dir("./ui/"))))
-	ui.PathPrefix("/static/").Handler(http.StripPrefix("/ui/static/", http.FileServer(http.Dir("./ui/static/"))))
-	ui.PathPrefix("/").HandlerFunc(reactHandler)
-
-}
-
-func reactHandler(w http.ResponseWriter, r *http.Request) {
-	http.ServeFile(w, r, "./ui/index.html")
 }
 
 func handlerLogout(w http.ResponseWriter, r *http.Request) {
@@ -70,8 +61,4 @@ func handlerLogout(w http.ResponseWriter, r *http.Request) {
 	ClearSession(w)
 
 	http.Redirect(w, r, redirectUri, 302)
-}
-
-func handlerFavicon(w http.ResponseWriter, r *http.Request) {
-	http.ServeFile(w, r, "./react-app/public/favicon.ico")
 }

@@ -19,7 +19,7 @@
 								{
 									"listen": "test",
 									"script": {
-										"id": "bb85fa41-b04b-4e81-84bd-fb58825ff605",
+										"id": "690949a8-bd82-476d-87e0-2098f8abed71",
 										"type": "text/javascript",
 										"exec": [
 											""
@@ -70,7 +70,7 @@
 								{
 									"listen": "test",
 									"script": {
-										"id": "2d05cccb-31f5-4a47-952b-3cdb02d368f2",
+										"id": "2a785d53-51d4-44e2-8f6d-1fd5f5b31203",
 										"type": "text/javascript",
 										"exec": [
 											"pm.test(\"Location is present\", function () {",
@@ -79,6 +79,7 @@
 											"",
 											"var redirectUri = postman.getResponseHeader(\"Location\");",
 											"var matches = redirectUri.match(/code=([0-9a-zA-Z-]+)/);",
+											"console.log(redirectUri);",
 											"pm.globals.set(\"code\", matches[1]);"
 										]
 									}
@@ -671,7 +672,7 @@
 								{
 									"listen": "test",
 									"script": {
-										"id": "350f3e2a-3859-4a89-b411-6a3ffcb8bb8f",
+										"id": "4517d470-7b41-4817-9c73-10105ce675b7",
 										"type": "text/javascript",
 										"exec": [
 											""
