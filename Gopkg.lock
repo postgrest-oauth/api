@@ -55,9 +55,21 @@
   revision = "7af7a1e09ba336d2ea14b1ce73bf693c6837dbf6"
   version = "v1.2"
 
+[[projects]]
+  name = "github.com/thedevsaddam/renderer"
+  packages = ["."]
+  revision = "a01ea90186c0b32f7f0514a1ba3b6364340020e6"
+  version = "v1.2"
+
+[[projects]]
+  name = "gopkg.in/yaml.v2"
+  packages = ["."]
+  revision = "5420a8b6744d3b0345ab293f6fcba19c978f1183"
+  version = "v2.2.1"
+
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "3a6523b85a3ec344704d4efabef371a1cc275669b7583f9f1f74bab5fa143db5"
+  inputs-digest = "29272e4bd2fc151adba847853566e625d1bd93c010c24f03beb8585bbb387725"
   solver-name = "gps-cdcl"
   solver-version = 1

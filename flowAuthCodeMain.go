@@ -4,27 +4,24 @@ import (
 	"errors"
 	"github.com/caarlos0/env"
 	"github.com/patrickmn/go-cache"
-	"html/template"
+	"github.com/thedevsaddam/renderer"
 	"log"
 	"net/http"
 	"time"
 )
 
-type Page struct {
-	Owner
-	Message          string
-	Query            template.URL
-	VerificationCode string
+type ErrorResponse struct {
+	Message string `json:"message"`
 }
 
 var authCodeConfig struct {
-	ValidateRedirectURI bool `env:"OAUTH_VALIDATE_REDIRECT_URI" envDefault:"true"`
+	ValidateRedirectURI bool   `env:"OAUTH_VALIDATE_REDIRECT_URI" envDefault:"true"`
+	OauthCodeUi         string `env:"OAUTH_CODE_UI" envDefault:"http://localhost:3685"`
 }
 
-var tmpl *template.Template
-var templatePath = "./templates/"
 var VerifyStorage = cache.New(24*time.Hour, 2*time.Hour)
 var PassResetStorage = cache.New(10*time.Minute, 5*time.Minute)
+var Rnd = renderer.New()
 
 func init() {
 	err := env.Parse(&authCodeConfig)
@@ -32,20 +29,8 @@ func init() {
 		log.Printf("%+v\n", err)
 	}
 
-	tmpl = template.Must(template.ParseFiles(
-		templatePath+signinTemplate,
-		templatePath+signupTemplate,
-		templatePath+verifyTemplate,
-		templatePath+passwordRequestTemplate,
-		templatePath+passwordResetTemplate,
-	))
-
-	Router.HandleFunc("/favicon.ico", handlerFavicon)
 	Router.HandleFunc("/logout", handlerLogout).Methods("GET")
-	Router.HandleFunc("/signup", handlerSignupGet).Methods("GET")
-	Router.HandleFunc("/signup", handlerSignupPost).Methods("POST")
 
-	Router.PathPrefix("/static/").Handler(http.StripPrefix("/static/", http.FileServer(http.Dir("./static/"))))
 }
 
 func handlerLogout(w http.ResponseWriter, r *http.Request) {
@@ -76,8 +61,4 @@ func handlerLogout(w http.ResponseWriter, r *http.Request) {
 	ClearSession(w)
 
 	http.Redirect(w, r, redirectUri, 302)
-}
-
-func handlerFavicon(w http.ResponseWriter, r *http.Request) {
-	http.ServeFile(w, r, templatePath+"favicon.ico")
 }

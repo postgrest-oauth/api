@@ -14,10 +14,9 @@ ENV OAUTH_DB_CONN_STRING="postgres://user:pass@postgresql:5432/test?sslmode=disa
     OAUTH_REFRESH_TOKEN_JWT_SECRET="notlesshan32symbolssecretkey!!!!" \
     OAUTH_COOKIE_HASH_KEY="supersecret" \
     OAUTH_COOKIE_BLOCK_KEY="16charssecret!!!" \
-    OAUTH_VALIDATE_REDIRECT_URI=true
+    OAUTH_VALIDATE_REDIRECT_URI=true \
+    OAUTH_CODE_UI="http://localhost:3685"
 RUN apk --no-cache add ca-certificates
 WORKDIR /root/
 COPY --from=0 /go/src/github.com/wildsurfer/postgrest-oauth-server/postgrest-oauth-server .
-COPY --from=0 /go/src/github.com/wildsurfer/postgrest-oauth-server/templates/ ./templates
-COPY --from=0 /go/src/github.com/wildsurfer/postgrest-oauth-server/static/ ./static
 CMD ./postgrest-oauth-server

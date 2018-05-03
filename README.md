@@ -49,6 +49,12 @@ Default: true
 
 This setting should be `true` when you use this in production. When set to `false` you can use any **redirect_uri**. Handy for development. 
 
+**OAUTH_CODE_UI**
+
+Default: http://localhost:3685
+
+This is a URL of UI that is used for Authorization Code Flow. 
+
 Testing with Newman
 ===================
 ```

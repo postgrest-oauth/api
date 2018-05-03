@@ -25,7 +25,7 @@ services:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
 
-  oauth:
+  oauth-api:
     build: ../
     ports:
       - "3684:3684"
@@ -37,3 +37,11 @@ services:
       OAUTH_COOKIE_HASH_KEY: ${OAUTH_COOKIE_HASH_KEY}
       OAUTH_COOKIE_BLOCK_KEY: ${OAUTH_COOKIE_BLOCK_KEY}
       OAUTH_VALIDATE_REDIRECT_URI: ${OAUTH_VALIDATE_REDIRECT_URI}
+      OAUTH_CODE_UI: ${OAUTH_CODE_UI}
+
+  oauth-ui:
+    image: postgrestoauth/ui:latest
+    ports:
+      - "3685:80"
+    environment:
+      POSTGREST_OAUTH_API_URI: ${POSTGREST_OAUTH_API_URI}

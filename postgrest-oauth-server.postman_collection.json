@@ -1,1088 +1,28 @@
 {
 	"info": {
+		"_postman_id": "10b46acf-af66-4fd7-9c76-f8b2723580be",
 		"name": "postgrest-oauth-server",
-		"_postman_id": "44116f4d-f54a-4924-639d-39ec02b939f0",
-		"description": "",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
 		{
 			"name": "Authorization Code Flow",
+			"description": null,
 			"item": [
 				{
-					"name": "Init",
-					"item": [
-						{
-							"name": "Force logout",
-							"event": [
-								{
-									"listen": "test",
-									"script": {
-										"type": "text/javascript",
-										"exec": [
-											"tests[\"Status code is 302\"] = responseCode.code === 302;"
-										]
-									}
-								}
-							],
-							"request": {
-								"method": "GET",
-								"header": [],
-								"body": {
-									"mode": "raw",
-									"raw": ""
-								},
-								"url": {
-									"raw": "http://{{host}}:3684/logout?client_id=spa&redirect_uri=https://spa.uri",
-									"protocol": "http",
-									"host": [
-										"{{host}}"
-									],
-									"port": "3684",
-									"path": [
-										"logout"
-									],
-									"query": [
-										{
-											"key": "client_id",
-											"value": "spa",
-											"equals": true
-										},
-										{
-											"key": "redirect_uri",
-											"value": "https://spa.uri",
-											"equals": true
-										}
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "Signup",
-							"event": [
-								{
-									"listen": "test",
-									"script": {
-										"type": "text/javascript",
-										"exec": [
-											"tests[\"Status code is 302\"] = responseCode.code === 302;"
-										]
-									}
-								},
-								{
-									"listen": "prerequest",
-									"script": {
-										"type": "text/javascript",
-										"exec": [
-											"var d = new Date().getTime();",
-											"postman.setEnvironmentVariable(\"email\", d + \"@kek.kek\");",
-											"postman.setEnvironmentVariable(\"phone\", d);"
-										]
-									}
-								}
-							],
-							"request": {
-								"method": "POST",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/x-www-form-urlencoded"
-									},
-									{
-										"key": "Referer",
-										"value": "/authorize?client_id=spa"
-									}
-								],
-								"body": {
-									"mode": "urlencoded",
-									"urlencoded": [
-										{
-											"key": "email",
-											"value": "{{email}}",
-											"type": "text"
-										},
-										{
-											"key": "password",
-											"value": "pass",
-											"type": "text"
-										},
-										{
-											"key": "phone",
-											"value": "{{phone}}",
-											"type": "text"
-										}
-									]
-								},
-								"url": {
-									"raw": "http://{{host}}:3684/signup?client_id=spa",
-									"protocol": "http",
-									"host": [
-										"{{host}}"
-									],
-									"port": "3684",
-									"path": [
-										"signup"
-									],
-									"query": [
-										{
-											"key": "client_id",
-											"value": "spa",
-											"equals": true
-										}
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "Signin",
-							"event": [
-								{
-									"listen": "test",
-									"script": {
-										"type": "text/javascript",
-										"exec": [
-											"tests[\"Status code is 302\"] = responseCode.code === 302;"
-										]
-									}
-								}
-							],
-							"request": {
-								"method": "POST",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/x-www-form-urlencoded"
-									}
-								],
-								"body": {
-									"mode": "urlencoded",
-									"urlencoded": [
-										{
-											"key": "username",
-											"value": "{{email}}",
-											"type": "text"
-										},
-										{
-											"key": "password",
-											"value": "pass",
-											"type": "text"
-										}
-									]
-								},
-								"url": {
-									"raw": "http://{{host}}:3684/signin",
-									"protocol": "http",
-									"host": [
-										"{{host}}"
-									],
-									"port": "3684",
-									"path": [
-										"signin"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "Verify with code",
-							"event": [
-								{
-									"listen": "test",
-									"script": {
-										"type": "text/javascript",
-										"exec": [
-											"tests[\"Status code is 200\"] = responseCode.code === 200;"
-										]
-									}
-								}
-							],
-							"request": {
-								"method": "GET",
-								"header": [],
-								"body": {
-									"mode": "raw",
-									"raw": ""
-								},
-								"url": {
-									"raw": "http://{{host}}:3684/verify/jhdbvsdviwufiwsjhbvhbdvkbh",
-									"protocol": "http",
-									"host": [
-										"{{host}}"
-									],
-									"port": "3684",
-									"path": [
-										"verify",
-										"jhdbvsdviwufiwsjhbvhbdvkbh"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "Verify no code",
-							"event": [
-								{
-									"listen": "test",
-									"script": {
-										"type": "text/javascript",
-										"exec": [
-											"tests[\"Status code is 200\"] = responseCode.code === 200;"
-										]
-									}
-								}
-							],
-							"request": {
-								"method": "GET",
-								"header": [],
-								"body": {
-									"mode": "raw",
-									"raw": ""
-								},
-								"url": {
-									"raw": "http://{{host}}:3684/verify",
-									"protocol": "http",
-									"host": [
-										"{{host}}"
-									],
-									"port": "3684",
-									"path": [
-										"verify"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "Password request",
-							"event": [
-								{
-									"listen": "test",
-									"script": {
-										"type": "text/javascript",
-										"exec": [
-											"tests[\"Status code is 200\"] = responseCode.code === 200;"
-										]
-									}
-								}
-							],
-							"request": {
-								"method": "GET",
-								"header": [],
-								"body": {
-									"mode": "raw",
-									"raw": ""
-								},
-								"url": {
-									"raw": "http://{{host}}:3684/password/request",
-									"protocol": "http",
-									"host": [
-										"{{host}}"
-									],
-									"port": "3684",
-									"path": [
-										"password",
-										"request"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "Password reset with code",
-							"event": [
-								{
-									"listen": "test",
-									"script": {
-										"type": "text/javascript",
-										"exec": [
-											"tests[\"Status code is 200\"] = responseCode.code === 200;"
-										]
-									}
-								}
-							],
-							"request": {
-								"method": "GET",
-								"header": [],
-								"body": {
-									"mode": "raw",
-									"raw": ""
-								},
-								"url": {
-									"raw": "http://{{host}}:3684/password/reset/jhdscusgdvcusvksjbkhefkuaged3",
-									"protocol": "http",
-									"host": [
-										"{{host}}"
-									],
-									"port": "3684",
-									"path": [
-										"password",
-										"reset",
-										"jhdscusgdvcusvksjbkhefkuaged3"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "Password reset no code",
-							"event": [
-								{
-									"listen": "test",
-									"script": {
-										"type": "text/javascript",
-										"exec": [
-											"tests[\"Status code is 200\"] = responseCode.code === 200;"
-										]
-									}
-								}
-							],
-							"request": {
-								"method": "GET",
-								"header": [],
-								"body": {
-									"mode": "raw",
-									"raw": ""
-								},
-								"url": {
-									"raw": "http://{{host}}:3684/password/reset",
-									"protocol": "http",
-									"host": [
-										"{{host}}"
-									],
-									"port": "3684",
-									"path": [
-										"password",
-										"reset"
-									]
-								}
-							},
-							"response": []
-						}
-					],
-					"_postman_isSubFolder": true
-				},
-				{
-					"name": "[Test] Email and phone are really unique",
-					"item": [
-						{
-							"name": "Signup email-only user",
-							"event": [
-								{
-									"listen": "test",
-									"script": {
-										"type": "text/javascript",
-										"exec": [
-											"tests[\"Status code is 302\"] = responseCode.code === 302;"
-										]
-									}
-								},
-								{
-									"listen": "prerequest",
-									"script": {
-										"type": "text/javascript",
-										"exec": [
-											"var d = new Date().getTime();",
-											"postman.setEnvironmentVariable(\"email\", d + \"@kek.kek\");",
-											"postman.setEnvironmentVariable(\"phone\", d);"
-										]
-									}
-								}
-							],
-							"request": {
-								"method": "POST",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/x-www-form-urlencoded"
-									},
-									{
-										"key": "Referer",
-										"value": "/authorize?client_id=spa"
-									}
-								],
-								"body": {
-									"mode": "urlencoded",
-									"urlencoded": [
-										{
-											"key": "email",
-											"value": "{{email}}",
-											"type": "text"
-										},
-										{
-											"key": "password",
-											"value": "pass",
-											"type": "text"
-										}
-									]
-								},
-								"url": {
-									"raw": "http://{{host}}:3684/signup?client_id=spa",
-									"protocol": "http",
-									"host": [
-										"{{host}}"
-									],
-									"port": "3684",
-									"path": [
-										"signup"
-									],
-									"query": [
-										{
-											"key": "client_id",
-											"value": "spa",
-											"equals": true
-										}
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "Signup same email is impossible",
-							"event": [
-								{
-									"listen": "test",
-									"script": {
-										"type": "text/javascript",
-										"exec": [
-											"tests[\"Status code is 200\"] = responseCode.code === 200;"
-										]
-									}
-								}
-							],
-							"request": {
-								"method": "POST",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/x-www-form-urlencoded"
-									},
-									{
-										"key": "Referer",
-										"value": "/authorize?client_id=spa"
-									}
-								],
-								"body": {
-									"mode": "urlencoded",
-									"urlencoded": [
-										{
-											"key": "email",
-											"value": "{{email}}",
-											"type": "text"
-										},
-										{
-											"key": "password",
-											"value": "pass",
-											"type": "text"
-										}
-									]
-								},
-								"url": {
-									"raw": "http://{{host}}:3684/signup?client_id=spa",
-									"protocol": "http",
-									"host": [
-										"{{host}}"
-									],
-									"port": "3684",
-									"path": [
-										"signup"
-									],
-									"query": [
-										{
-											"key": "client_id",
-											"value": "spa",
-											"equals": true
-										}
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "Signup phone-only user",
-							"event": [
-								{
-									"listen": "test",
-									"script": {
-										"type": "text/javascript",
-										"exec": [
-											"tests[\"Status code is 302\"] = responseCode.code === 302;"
-										]
-									}
-								}
-							],
-							"request": {
-								"method": "POST",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/x-www-form-urlencoded"
-									},
-									{
-										"key": "Referer",
-										"value": "/authorize?client_id=spa"
-									}
-								],
-								"body": {
-									"mode": "urlencoded",
-									"urlencoded": [
-										{
-											"key": "password",
-											"value": "pass",
-											"type": "text"
-										},
-										{
-											"key": "phone",
-											"value": "{{phone}}",
-											"type": "text"
-										}
-									]
-								},
-								"url": {
-									"raw": "http://{{host}}:3684/signup?client_id=spa",
-									"protocol": "http",
-									"host": [
-										"{{host}}"
-									],
-									"port": "3684",
-									"path": [
-										"signup"
-									],
-									"query": [
-										{
-											"key": "client_id",
-											"value": "spa",
-											"equals": true
-										}
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "Signup same phone is impossible",
-							"event": [
-								{
-									"listen": "test",
-									"script": {
-										"type": "text/javascript",
-										"exec": [
-											"tests[\"Status code is 200\"] = responseCode.code === 200;"
-										]
-									}
-								}
-							],
-							"request": {
-								"method": "POST",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/x-www-form-urlencoded"
-									},
-									{
-										"key": "Referer",
-										"value": "/authorize?client_id=spa"
-									}
-								],
-								"body": {
-									"mode": "urlencoded",
-									"urlencoded": [
-										{
-											"key": "password",
-											"value": "pass",
-											"type": "text"
-										},
-										{
-											"key": "phone",
-											"value": "{{phone}}",
-											"type": "text"
-										}
-									]
-								},
-								"url": {
-									"raw": "http://{{host}}:3684/signup?client_id=spa",
-									"protocol": "http",
-									"host": [
-										"{{host}}"
-									],
-									"port": "3684",
-									"path": [
-										"signup"
-									],
-									"query": [
-										{
-											"key": "client_id",
-											"value": "spa",
-											"equals": true
-										}
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "Signup existing email with other phone is impossible",
-							"event": [
-								{
-									"listen": "test",
-									"script": {
-										"type": "text/javascript",
-										"exec": [
-											"tests[\"Status code is 200\"] = responseCode.code === 200;"
-										]
-									}
-								},
-								{
-									"listen": "prerequest",
-									"script": {
-										"type": "text/javascript",
-										"exec": [
-											"var d = new Date().getTime();",
-											"postman.setEnvironmentVariable(\"new_email\", d + \"@kek.kek\");",
-											"postman.setEnvironmentVariable(\"new_phone\", d);"
-										]
-									}
-								}
-							],
-							"request": {
-								"method": "POST",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/x-www-form-urlencoded"
-									},
-									{
-										"key": "Referer",
-										"value": "/authorize?client_id=spa"
-									}
-								],
-								"body": {
-									"mode": "urlencoded",
-									"urlencoded": [
-										{
-											"key": "password",
-											"value": "pass",
-											"type": "text"
-										},
-										{
-											"key": "email",
-											"value": "{{email}}",
-											"type": "text"
-										},
-										{
-											"key": "phone",
-											"value": "{{new_phone}}",
-											"type": "text"
-										}
-									]
-								},
-								"url": {
-									"raw": "http://{{host}}:3684/signup?client_id=spa",
-									"protocol": "http",
-									"host": [
-										"{{host}}"
-									],
-									"port": "3684",
-									"path": [
-										"signup"
-									],
-									"query": [
-										{
-											"key": "client_id",
-											"value": "spa",
-											"equals": true
-										}
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "Signup existing phone with other email is impossible",
-							"event": [
-								{
-									"listen": "test",
-									"script": {
-										"type": "text/javascript",
-										"exec": [
-											"tests[\"Status code is 200\"] = responseCode.code === 200;"
-										]
-									}
-								}
-							],
-							"request": {
-								"method": "POST",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/x-www-form-urlencoded"
-									},
-									{
-										"key": "Referer",
-										"value": "/authorize?client_id=spa"
-									}
-								],
-								"body": {
-									"mode": "urlencoded",
-									"urlencoded": [
-										{
-											"key": "password",
-											"value": "pass",
-											"type": "text"
-										},
-										{
-											"key": "email",
-											"value": "{{new_email}}",
-											"type": "text"
-										},
-										{
-											"key": "phone",
-											"value": "{{phone}}",
-											"type": "text"
-										}
-									]
-								},
-								"url": {
-									"raw": "http://{{host}}:3684/signup?client_id=spa",
-									"protocol": "http",
-									"host": [
-										"{{host}}"
-									],
-									"port": "3684",
-									"path": [
-										"signup"
-									],
-									"query": [
-										{
-											"key": "client_id",
-											"value": "spa",
-											"equals": true
-										}
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "Signup with no phone and no email is impossible",
-							"event": [
-								{
-									"listen": "test",
-									"script": {
-										"type": "text/javascript",
-										"exec": [
-											"tests[\"Status code is 200\"] = responseCode.code === 200;"
-										]
-									}
-								}
-							],
-							"request": {
-								"method": "POST",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/x-www-form-urlencoded"
-									},
-									{
-										"key": "Referer",
-										"value": "/authorize?client_id=spa"
-									}
-								],
-								"body": {
-									"mode": "urlencoded",
-									"urlencoded": [
-										{
-											"key": "password",
-											"value": "pass",
-											"type": "text"
-										},
-										{
-											"key": "email",
-											"value": "",
-											"type": "text"
-										},
-										{
-											"key": "phone",
-											"value": "",
-											"type": "text"
-										}
-									]
-								},
-								"url": {
-									"raw": "http://{{host}}:3684/signup?client_id=spa",
-									"protocol": "http",
-									"host": [
-										"{{host}}"
-									],
-									"port": "3684",
-									"path": [
-										"signup"
-									],
-									"query": [
-										{
-											"key": "client_id",
-											"value": "spa",
-											"equals": true
-										}
-									]
-								}
-							},
-							"response": []
-						}
-					],
-					"_postman_isSubFolder": true
-				},
-				{
-					"name": "[Test] Wrong Client",
-					"item": [
-						{
-							"name": "Authorization Request",
-							"event": [
-								{
-									"listen": "test",
-									"script": {
-										"type": "text/javascript",
-										"exec": [
-											"tests[\"Status code is 400\"] = responseCode.code === 400;"
-										]
-									}
-								}
-							],
-							"request": {
-								"method": "GET",
-								"header": [],
-								"body": {
-									"mode": "raw",
-									"raw": ""
-								},
-								"url": {
-									"raw": "http://{{host}}:3684/authorize?response_type=code&client_id=wrongclientid",
-									"protocol": "http",
-									"host": [
-										"{{host}}"
-									],
-									"port": "3684",
-									"path": [
-										"authorize"
-									],
-									"query": [
-										{
-											"key": "response_type",
-											"value": "code",
-											"equals": true
-										},
-										{
-											"key": "client_id",
-											"value": "wrongclientid",
-											"equals": true
-										}
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "Access Token Request (SignIn)",
-							"request": {
-								"method": "POST",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/x-www-form-urlencoded"
-									}
-								],
-								"body": {
-									"mode": "urlencoded",
-									"urlencoded": [
-										{
-											"key": "username",
-											"value": "{{email}}",
-											"type": "text"
-										},
-										{
-											"key": "password",
-											"value": "pass",
-											"type": "text"
-										}
-									]
-								},
-								"url": {
-									"raw": "http://{{host}}:3684/signin",
-									"protocol": "http",
-									"host": [
-										"{{host}}"
-									],
-									"port": "3684",
-									"path": [
-										"signin"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "Authorization Request (Signed in)",
-							"event": [
-								{
-									"listen": "test",
-									"script": {
-										"type": "text/javascript",
-										"exec": [
-											"var redirectUri = postman.getResponseHeader(\"Location\");",
-											"var matches = redirectUri.match(/code=([0-9a-zA-Z-]+)/);",
-											"postman.setEnvironmentVariable(\"code\", matches[1]);"
-										]
-									}
-								}
-							],
-							"request": {
-								"method": "GET",
-								"header": [],
-								"body": {
-									"mode": "raw",
-									"raw": ""
-								},
-								"url": {
-									"raw": "http://{{host}}:3684/authorize?response_type=code&client_id=spa&state=xyz4",
-									"protocol": "http",
-									"host": [
-										"{{host}}"
-									],
-									"port": "3684",
-									"path": [
-										"authorize"
-									],
-									"query": [
-										{
-											"key": "response_type",
-											"value": "code",
-											"equals": true
-										},
-										{
-											"key": "client_id",
-											"value": "spa",
-											"equals": true
-										},
-										{
-											"key": "state",
-											"value": "xyz4",
-											"equals": true
-										}
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "Access Token Request",
-							"event": [
-								{
-									"listen": "test",
-									"script": {
-										"type": "text/javascript",
-										"exec": [
-											"tests[\"Status code is 400\"] = responseCode.code === 400;"
-										]
-									}
-								}
-							],
-							"request": {
-								"method": "POST",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/x-www-form-urlencoded"
-									}
-								],
-								"body": {
-									"mode": "urlencoded",
-									"urlencoded": [
-										{
-											"key": "grant_type",
-											"value": "authorization_code",
-											"type": "text"
-										},
-										{
-											"key": "code",
-											"value": "{{code}}",
-											"type": "text"
-										},
-										{
-											"key": "client_id",
-											"value": "wrongclientid",
-											"type": "text"
-										}
-									]
-								},
-								"url": {
-									"raw": "http://{{host}}:3684/token",
-									"protocol": "http",
-									"host": [
-										"{{host}}"
-									],
-									"port": "3684",
-									"path": [
-										"token"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "Access Token Request (SignIn)",
-							"request": {
-								"method": "POST",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/x-www-form-urlencoded"
-									}
-								],
-								"body": {
-									"mode": "urlencoded",
-									"urlencoded": [
-										{
-											"key": "username",
-											"value": "kek@kek.kek",
-											"type": "text"
-										},
-										{
-											"key": "password",
-											"value": "pass",
-											"type": "text"
-										}
-									]
-								},
-								"url": {
-									"raw": "http://localhost:3684/signin",
-									"protocol": "http",
-									"host": [
-										"localhost"
-									],
-									"port": "3684",
-									"path": [
-										"signin"
-									]
-								}
-							},
-							"response": []
-						}
-					],
-					"_postman_isSubFolder": true
-				},
-				{
 					"name": "[Test] Code can be used once",
+					"description": null,
 					"item": [
 						{
-							"name": "Access Token Request (SignIn)",
+							"name": "SignIn",
 							"event": [
 								{
 									"listen": "test",
 									"script": {
+										"id": "690949a8-bd82-476d-87e0-2098f8abed71",
 										"type": "text/javascript",
 										"exec": [
-											"tests[\"Status code is 200\"] = responseCode.code === 302;"
+											""
 										]
 									}
 								}
@@ -1125,19 +65,22 @@
 							"response": []
 						},
 						{
-							"name": "Authorization Request",
+							"name": "Get authorization code",
 							"event": [
 								{
 									"listen": "test",
 									"script": {
+										"id": "2a785d53-51d4-44e2-8f6d-1fd5f5b31203",
 										"type": "text/javascript",
 										"exec": [
-											"tests[\"No state in response\"] = !responseBody.has(\"state=\");",
+											"pm.test(\"Location is present\", function () {",
+											"    pm.response.to.have.header(\"Location\");",
+											"});",
 											"",
 											"var redirectUri = postman.getResponseHeader(\"Location\");",
-											"tests[\"Location header is present\"] = redirectUri",
 											"var matches = redirectUri.match(/code=([0-9a-zA-Z-]+)/);",
-											"postman.setEnvironmentVariable(\"code\", matches[1]);"
+											"console.log(redirectUri);",
+											"pm.globals.set(\"code\", matches[1]);"
 										]
 									}
 								}
@@ -1162,13 +105,11 @@
 									"query": [
 										{
 											"key": "response_type",
-											"value": "code",
-											"equals": true
+											"value": "code"
 										},
 										{
 											"key": "client_id",
-											"value": "spa",
-											"equals": true
+											"value": "spa"
 										}
 									]
 								}
@@ -1176,22 +117,15 @@
 							"response": []
 						},
 						{
-							"name": "Access Token Request",
+							"name": "Use code",
 							"event": [
 								{
 									"listen": "test",
 									"script": {
+										"id": "51e006b9-6a4f-44ca-a05a-d1cac095a0c4",
 										"type": "text/javascript",
 										"exec": [
-											"tests[\"Access token returned\"] = responseBody.has(\"access_token\");",
-											"tests[\"Refresh token returned\"] = responseBody.has(\"refresh_token\");",
-											"tests[\"Token type returned\"] = responseBody.has(\"token_type\");",
-											"",
-											"tests[\"Status code is 200\"] = responseCode.code === 200;",
-											"",
-											"var data = JSON.parse(responseBody);",
-											"postman.setEnvironmentVariable(\"access_token\", data.access_token);",
-											"postman.setEnvironmentVariable(\"refresh_token\", data.refresh_token);"
+											""
 										]
 									}
 								}
@@ -1239,16 +173,630 @@
 							"response": []
 						},
 						{
-							"name": "Access Token Request (Should fail)",
+							"name": "Use same code again",
 							"event": [
 								{
 									"listen": "test",
 									"script": {
+										"id": "17446786-0a29-4aa7-8cfa-b355c5e4e0c5",
 										"type": "text/javascript",
 										"exec": [
-											"tests[\"Error code\"] = responseBody.has(\"error\");",
+											"pm.test(\"Status code is 400\", function () {",
+											"    pm.response.to.have.status(400);",
+											"});",
 											"",
-											"tests[\"Status code is 400\"] = responseCode.code === 400;"
+											"pm.test(\"Error message is in place\", function () {",
+											"    var jsonData = pm.response.json();",
+											"    pm.expect(jsonData.error).to.eql(\"invalid_grant\");",
+											"});"
+										]
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/x-www-form-urlencoded"
+									}
+								],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "grant_type",
+											"value": "authorization_code",
+											"type": "text"
+										},
+										{
+											"key": "code",
+											"value": "{{code}}",
+											"type": "text"
+										},
+										{
+											"key": "client_id",
+											"value": "spa",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "http://{{host}}:3684/token",
+									"protocol": "http",
+									"host": [
+										"{{host}}"
+									],
+									"port": "3684",
+									"path": [
+										"token"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Signup",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "25e27108-02d4-42bd-90b8-2d9a8dbb5e67",
+										"type": "text/javascript",
+										"exec": [
+											""
+										]
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"id": "481bab84-6556-4857-9a6d-08116b25c788",
+										"type": "text/javascript",
+										"exec": [
+											"var d = new Date().getTime();",
+											"",
+											"pm.globals.set(\"email\", d + \"@kek.kek\");",
+											"pm.globals.set(\"phone\", d);",
+											""
+										]
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/x-www-form-urlencoded"
+									}
+								],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "email",
+											"value": "{{email}}",
+											"type": "text"
+										},
+										{
+											"key": "password",
+											"value": "pass",
+											"type": "text"
+										},
+										{
+											"key": "phone",
+											"value": "{{phone}}",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "http://{{host}}:3684/signup",
+									"protocol": "http",
+									"host": [
+										"{{host}}"
+									],
+									"port": "3684",
+									"path": [
+										"signup"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "[Test] User already exist",
+					"description": "",
+					"item": [
+						{
+							"name": "Signup",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "e4b5ee4c-641a-4dd0-86f4-a2edaccc0426",
+										"type": "text/javascript",
+										"exec": [
+											"pm.test(\"Successful POST request\", function () {",
+											"    pm.expect(pm.response.code).to.be.oneOf([201,202]);",
+											"});"
+										]
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"id": "4e36e065-9a5b-4caf-bd86-ceb706bbab2a",
+										"type": "text/javascript",
+										"exec": [
+											"var d = new Date().getTime();",
+											"",
+											"pm.globals.set(\"email\", d + \"@kek.kek\");",
+											"pm.globals.set(\"phone\", d);"
+										]
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/x-www-form-urlencoded"
+									}
+								],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "email",
+											"value": "{{email}}",
+											"type": "text"
+										},
+										{
+											"key": "password",
+											"value": "pass",
+											"type": "text"
+										},
+										{
+											"key": "phone",
+											"value": "{{phone}}",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "http://{{host}}:3684/signup",
+									"protocol": "http",
+									"host": [
+										"{{host}}"
+									],
+									"port": "3684",
+									"path": [
+										"signup"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Signup Again",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "763d1411-677a-4945-9b5b-56a6b457160b",
+										"type": "text/javascript",
+										"exec": [
+											"pm.test(\"Status code is 403\", function () {",
+											"    pm.response.to.have.status(403);",
+											"});"
+										]
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"id": "5b06e955-488c-41cb-993d-3e60dc05d39f",
+										"type": "text/javascript",
+										"exec": [
+											""
+										]
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/x-www-form-urlencoded"
+									}
+								],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "email",
+											"value": "{{email}}",
+											"type": "text"
+										},
+										{
+											"key": "password",
+											"value": "pass",
+											"type": "text"
+										},
+										{
+											"key": "phone",
+											"value": "{{phone}}",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "http://{{host}}:3684/signup",
+									"protocol": "http",
+									"host": [
+										"{{host}}"
+									],
+									"port": "3684",
+									"path": [
+										"signup"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "[Test] Signin gives cookie",
+					"description": "",
+					"item": [
+						{
+							"name": "Signup",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "48de37c0-8c0f-498b-86be-7122f3855f3f",
+										"type": "text/javascript",
+										"exec": [
+											"pm.test(\"Successful POST request\", function () {",
+											"    pm.expect(pm.response.code).to.be.oneOf([201,202]);",
+											"});"
+										]
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"id": "449b7a47-4d17-424e-9a86-83388ccd51af",
+										"type": "text/javascript",
+										"exec": [
+											"var d = new Date().getTime();",
+											"",
+											"pm.globals.set(\"email\", d + \"@kek.kek\");",
+											"pm.globals.set(\"phone\", d);",
+											""
+										]
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/x-www-form-urlencoded"
+									}
+								],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "email",
+											"value": "{{email}}",
+											"type": "text"
+										},
+										{
+											"key": "password",
+											"value": "pass",
+											"type": "text"
+										},
+										{
+											"key": "phone",
+											"value": "{{phone}}",
+											"description": "",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "http://{{host}}:3684/signup",
+									"protocol": "http",
+									"host": [
+										"{{host}}"
+									],
+									"port": "3684",
+									"path": [
+										"signup"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Signin",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "6a414a25-df7f-4ee4-bcf6-0cb033ee75b0",
+										"type": "text/javascript",
+										"exec": [
+											"pm.test(\"Cookie is returned\", function(){",
+											"   cookie = postman.getResponseCookie(\"session\").value;",
+											"   pm.expect(postman.getResponseCookie(\"session\").value).to.be.a(\"string\")",
+											"});",
+											"",
+											"pm.test(\"Status code is 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});"
+										]
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/x-www-form-urlencoded"
+									}
+								],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "username",
+											"value": "{{email}}",
+											"type": "text"
+										},
+										{
+											"key": "password",
+											"value": "pass",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "http://{{host}}:3684/signin",
+									"protocol": "http",
+									"host": [
+										"{{host}}"
+									],
+									"port": "3684",
+									"path": [
+										"signin"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "[Test] User can get tokens",
+					"description": "",
+					"item": [
+						{
+							"name": "Signup",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "34c99f48-61fc-4a31-9271-f37ef548ce06",
+										"type": "text/javascript",
+										"exec": [
+											""
+										]
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"id": "a5b94b95-c10e-4c45-a8d0-439c24cbc429",
+										"type": "text/javascript",
+										"exec": [
+											"var d = new Date().getTime();",
+											"",
+											"pm.globals.set(\"email\", d + \"@kek.kek\");",
+											"pm.globals.set(\"phone\", d);"
+										]
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/x-www-form-urlencoded"
+									}
+								],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "email",
+											"value": "{{email}}",
+											"type": "text"
+										},
+										{
+											"key": "password",
+											"value": "pass",
+											"type": "text"
+										},
+										{
+											"key": "phone",
+											"value": "{{phone}}",
+											"description": "",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "http://{{host}}:3684/signup",
+									"protocol": "http",
+									"host": [
+										"{{host}}"
+									],
+									"port": "3684",
+									"path": [
+										"signup"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Signin",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "4517d470-7b41-4817-9c73-10105ce675b7",
+										"type": "text/javascript",
+										"exec": [
+											""
+										]
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/x-www-form-urlencoded"
+									}
+								],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "username",
+											"value": "{{email}}",
+											"type": "text"
+										},
+										{
+											"key": "password",
+											"value": "pass",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "http://{{host}}:3684/signin",
+									"protocol": "http",
+									"host": [
+										"{{host}}"
+									],
+									"port": "3684",
+									"path": [
+										"signin"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get authorization code",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "4b05350a-1c0f-4d5a-8f87-6a09c17b7fc3",
+										"type": "text/javascript",
+										"exec": [
+											"pm.test(\"Location is present\", function () {",
+											"    pm.response.to.have.header(\"Location\");",
+											"});",
+											"",
+											"var redirectUri = postman.getResponseHeader(\"Location\");",
+											"var matches = redirectUri.match(/code=([0-9a-zA-Z-]+)/);",
+											"pm.globals.set(\"code\", matches[1]);"
+										]
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "http://{{host}}:3684/authorize?response_type=code&client_id=spa",
+									"protocol": "http",
+									"host": [
+										"{{host}}"
+									],
+									"port": "3684",
+									"path": [
+										"authorize"
+									],
+									"query": [
+										{
+											"key": "response_type",
+											"value": "code"
+										},
+										{
+											"key": "client_id",
+											"value": "spa"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get tokens",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "26759d5e-777d-462f-b3f4-52dda46c15a9",
+										"type": "text/javascript",
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"var schema = {",
+											"  \"access_token\": {",
+											"    \"type\": \"string\"",
+											"  },",
+											"  \"refresh_token\": {",
+											"    \"type\": \"string\"",
+											"  },",
+											"  \"token_type\": {",
+											"    \"type\": \"string\"",
+											"  }",
+											"};",
+											"",
+											"pm.test('Schema is valid', function() {",
+											"  var jsonData = pm.response.json();",
+											"  pm.expect(tv4.validate(jsonData, schema)).to.be.true;",
+											"});"
 										]
 									}
 								}
@@ -1297,522 +845,6 @@
 						}
 					],
 					"_postman_isSubFolder": true
-				},
-				{
-					"name": "Force logout",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"type": "text/javascript",
-								"exec": [
-									"tests[\"Status code is 302\"] = responseCode.code === 302;"
-								]
-							}
-						}
-					],
-					"request": {
-						"method": "GET",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
-						"url": {
-							"raw": "http://{{host}}:3684/logout?client_id=spa&redirect_uri=https://spa.uri",
-							"protocol": "http",
-							"host": [
-								"{{host}}"
-							],
-							"port": "3684",
-							"path": [
-								"logout"
-							],
-							"query": [
-								{
-									"key": "client_id",
-									"value": "spa",
-									"equals": true
-								},
-								{
-									"key": "redirect_uri",
-									"value": "https://spa.uri",
-									"equals": true
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Access Token Request (SignIn)",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"type": "text/javascript",
-								"exec": [
-									"tests[\"Status code is 200\"] = responseCode.code === 302;"
-								]
-							}
-						}
-					],
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/x-www-form-urlencoded"
-							}
-						],
-						"body": {
-							"mode": "urlencoded",
-							"urlencoded": [
-								{
-									"key": "username",
-									"value": "{{email}}",
-									"type": "text"
-								},
-								{
-									"key": "password",
-									"value": "pass",
-									"type": "text"
-								}
-							]
-						},
-						"url": {
-							"raw": "http://{{host}}:3684/signin",
-							"protocol": "http",
-							"host": [
-								"{{host}}"
-							],
-							"port": "3684",
-							"path": [
-								"signin"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Authorization Request (Signed in)",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"type": "text/javascript",
-								"exec": [
-									"tests[\"Status code is 302\"] = responseCode.code === 302;",
-									"",
-									"tests[\"State is correct and returned\"] = responseBody.has(\"state=xyz4\");"
-								]
-							}
-						}
-					],
-					"request": {
-						"method": "GET",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
-						"url": {
-							"raw": "http://{{host}}:3684/authorize?response_type=code&client_id=spa&state=xyz4",
-							"protocol": "http",
-							"host": [
-								"{{host}}"
-							],
-							"port": "3684",
-							"path": [
-								"authorize"
-							],
-							"query": [
-								{
-									"key": "response_type",
-									"value": "code",
-									"equals": true
-								},
-								{
-									"key": "client_id",
-									"value": "spa",
-									"equals": true
-								},
-								{
-									"key": "state",
-									"value": "xyz4",
-									"equals": true
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Authorization Request (No state)",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"type": "text/javascript",
-								"exec": [
-									"tests[\"No state in response\"] = !responseBody.has(\"state=\");",
-									"",
-									"var redirectUri = postman.getResponseHeader(\"Location\");",
-									"tests[\"Location header is present\"] = redirectUri",
-									"var matches = redirectUri.match(/code=([0-9a-zA-Z-]+)/);",
-									"postman.setEnvironmentVariable(\"code\", matches[1]);"
-								]
-							}
-						}
-					],
-					"request": {
-						"method": "GET",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
-						"url": {
-							"raw": "http://{{host}}:3684/authorize?response_type=code&client_id=spa",
-							"protocol": "http",
-							"host": [
-								"{{host}}"
-							],
-							"port": "3684",
-							"path": [
-								"authorize"
-							],
-							"query": [
-								{
-									"key": "response_type",
-									"value": "code",
-									"equals": true
-								},
-								{
-									"key": "client_id",
-									"value": "spa",
-									"equals": true
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Access Token Request",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"type": "text/javascript",
-								"exec": [
-									"tests[\"Access token returned\"] = responseBody.has(\"access_token\");",
-									"tests[\"Refresh token returned\"] = responseBody.has(\"refresh_token\");",
-									"tests[\"Token type returned\"] = responseBody.has(\"token_type\");",
-									"",
-									"tests[\"Status code is 200\"] = responseCode.code === 200;",
-									"",
-									"var data = JSON.parse(responseBody);",
-									"postman.setEnvironmentVariable(\"access_token\", data.access_token);",
-									"postman.setEnvironmentVariable(\"refresh_token\", data.refresh_token);"
-								]
-							}
-						}
-					],
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/x-www-form-urlencoded"
-							}
-						],
-						"body": {
-							"mode": "urlencoded",
-							"urlencoded": [
-								{
-									"key": "grant_type",
-									"value": "authorization_code",
-									"type": "text"
-								},
-								{
-									"key": "code",
-									"value": "{{code}}",
-									"type": "text"
-								},
-								{
-									"key": "client_id",
-									"value": "spa",
-									"type": "text"
-								}
-							]
-						},
-						"url": {
-							"raw": "http://{{host}}:3684/token",
-							"protocol": "http",
-							"host": [
-								"{{host}}"
-							],
-							"port": "3684",
-							"path": [
-								"token"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Access Token Request Error",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"type": "text/javascript",
-								"exec": [
-									"tests[\"Error code\"] = responseBody.has(\"error\");",
-									"",
-									"tests[\"Status code is 400\"] = responseCode.code === 400;"
-								]
-							}
-						}
-					],
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/x-www-form-urlencoded"
-							}
-						],
-						"body": {
-							"mode": "urlencoded",
-							"urlencoded": [
-								{
-									"key": "grant_type",
-									"value": "authorization_code",
-									"type": "text"
-								},
-								{
-									"key": "code",
-									"value": "notexistingcode",
-									"type": "text"
-								},
-								{
-									"key": "client_id",
-									"value": "spa",
-									"type": "text"
-								}
-							]
-						},
-						"url": {
-							"raw": "http://{{host}}:3684/token",
-							"protocol": "http",
-							"host": [
-								"{{host}}"
-							],
-							"port": "3684",
-							"path": [
-								"token"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Refresh Token Request",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"type": "text/javascript",
-								"exec": [
-									"tests[\"Access token returned\"] = responseBody.has(\"access_token\");",
-									"tests[\"Refresh token returned\"] = responseBody.has(\"refresh_token\");",
-									"tests[\"Token type returned\"] = responseBody.has(\"token_type\");",
-									"",
-									"tests[\"Status code is 200\"] = responseCode.code === 200;"
-								]
-							}
-						}
-					],
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/x-www-form-urlencoded"
-							}
-						],
-						"body": {
-							"mode": "urlencoded",
-							"urlencoded": [
-								{
-									"key": "grant_type",
-									"value": "refresh_token",
-									"type": "text"
-								},
-								{
-									"key": "refresh_token",
-									"value": "{{refresh_token}}",
-									"type": "text"
-								}
-							]
-						},
-						"url": {
-							"raw": "http://{{host}}:3684/token",
-							"protocol": "http",
-							"host": [
-								"{{host}}"
-							],
-							"port": "3684",
-							"path": [
-								"token"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Refresh Token Request Error",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"type": "text/javascript",
-								"exec": [
-									"tests[\"Error code\"] = responseBody.has(\"error\");",
-									"",
-									"tests[\"Status code is 400\"] = responseCode.code === 400;"
-								]
-							}
-						}
-					],
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/x-www-form-urlencoded"
-							}
-						],
-						"body": {
-							"mode": "urlencoded",
-							"urlencoded": [
-								{
-									"key": "grant_type",
-									"value": "refresh_token",
-									"type": "text"
-								},
-								{
-									"key": "refresh_token",
-									"value": "notexistingtoken",
-									"type": "text"
-								}
-							]
-						},
-						"url": {
-							"raw": "http://{{host}}:3684/token",
-							"protocol": "http",
-							"host": [
-								"{{host}}"
-							],
-							"port": "3684",
-							"path": [
-								"token"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Get user info",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"type": "text/javascript",
-								"exec": [
-									"tests[\"Status code is 200\"] = responseCode.code === 200;"
-								]
-							}
-						}
-					],
-					"request": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "Bearer {{access_token}}"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
-						"url": {
-							"raw": "http://{{host}}:3000/me",
-							"protocol": "http",
-							"host": [
-								"{{host}}"
-							],
-							"port": "3000",
-							"path": [
-								"me"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Authorization Request",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"type": "text/javascript",
-								"exec": [
-									"tests[\"Status code is 302\"] = responseCode.code === 302;"
-								]
-							}
-						}
-					],
-					"request": {
-						"method": "GET",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
-						"url": {
-							"raw": "http://localhost:3684/authorize?response_type=code&client_id=spa&state=xyz",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "3684",
-							"path": [
-								"authorize"
-							],
-							"query": [
-								{
-									"key": "response_type",
-									"value": "code",
-									"equals": true
-								},
-								{
-									"key": "client_id",
-									"value": "spa",
-									"equals": true
-								},
-								{
-									"key": "state",
-									"value": "xyz",
-									"equals": true
-								}
-							]
-						}
-					},
-					"response": []
 				}
 			],
 			"event": [
@@ -1840,7 +872,7 @@
 		},
 		{
 			"name": "Client Credentials Flow",
-			"description": "",
+			"description": null,
 			"item": [
 				{
 					"name": "Access Token Request (No Secret)",
@@ -1848,12 +880,17 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "812bb54c-d842-4886-af3d-09bafb8ea372",
+								"id": "c72fec52-afaa-43d9-a81a-fa51ccff574f",
 								"type": "text/javascript",
 								"exec": [
-									"tests[\"Error code\"] = responseBody.has(\"error\");",
+									"pm.test(\"Error message is in place\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.error).to.eql(\"invalid_grant\");",
+									"});",
 									"",
-									"tests[\"Status code is 400\"] = responseCode.code === 400;"
+									"pm.test(\"Status code is 400\", function () {",
+									"    pm.response.to.have.status(400);",
+									"});"
 								]
 							}
 						}
@@ -1882,7 +919,6 @@
 								{
 									"key": "client_secret",
 									"value": "invalid secret",
-									"description": "",
 									"type": "text"
 								}
 							]
@@ -1907,16 +943,29 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "35a0df0a-c294-4d3c-93eb-6f349f93212c",
+								"id": "c57197d3-bf3d-41bc-8295-b3625a56cb3b",
 								"type": "text/javascript",
 								"exec": [
-									"tests[\"Access token returned\"] = responseBody.has(\"access_token\");",
-									"tests[\"Token type returned\"] = responseBody.has(\"token_type\");",
-									"",
-									"tests[\"Status code is 200\"] = responseCode.code === 200;",
-									"",
 									"var data = JSON.parse(responseBody);",
-									"postman.setEnvironmentVariable(\"access_token\", data.access_token);"
+									"pm.globals.set(\"access_token\", data.access_token);",
+									"",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"var schema = {",
+									"  \"access_token\": {",
+									"    \"type\": \"string\"",
+									"  },",
+									"  \"token_type\": {",
+									"    \"type\": \"string\"",
+									"  }",
+									"};",
+									"",
+									"pm.test('Schema is valid', function() {",
+									"  var jsonData = pm.response.json();",
+									"  pm.expect(tv4.validate(jsonData, schema)).to.be.true;",
+									"});"
 								]
 							}
 						}
@@ -1945,7 +994,6 @@
 								{
 									"key": "client_secret",
 									"value": "secret",
-									"description": "",
 									"type": "text"
 								}
 							]
@@ -1985,7 +1033,10 @@
 								"value": "Bearer {{access_token}}"
 							}
 						],
-						"body": {},
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
 						"url": {
 							"raw": "http://{{host}}:3000/client",
 							"protocol": "http",
