@@ -11,6 +11,7 @@ import (
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gorilla/mux"
 	"github.com/patrickmn/go-cache"
+	"net/url"
 )
 
 type AuthCodeData struct {
@@ -91,12 +92,15 @@ func handlerAuthCode(w http.ResponseWriter, r *http.Request) {
 
 	Storage.Set(code, *data, cache.DefaultExpiration)
 
-	redirectUri = redirectUri + "?code=" + code
+	redirectUriParsed, _ := url.Parse(redirectUri)
+	params, _ := url.ParseQuery(redirectUriParsed.RawQuery)
+	params.Add("code", code)
+
 	if state := r.URL.Query().Get("state"); state != "" {
-		redirectUri = redirectUri + "&state=" + state
+		params.Add("state", state)
 	}
 
-	http.Redirect(w, r, redirectUri, 302)
+	http.Redirect(w, r, redirectUriParsed.String(), 302)
 	return
 }
 
