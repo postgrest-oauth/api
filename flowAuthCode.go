@@ -100,6 +100,8 @@ func handlerAuthCode(w http.ResponseWriter, r *http.Request) {
 		params.Add("state", state)
 	}
 
+	redirectUriParsed.RawQuery = params.Encode()
+
 	http.Redirect(w, r, redirectUriParsed.String(), 302)
 	return
 }
