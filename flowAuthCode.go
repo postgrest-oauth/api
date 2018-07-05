@@ -94,15 +94,15 @@ func handlerAuthCode(w http.ResponseWriter, r *http.Request) {
 
 	redirectUriParsed, _ := url.Parse(redirectUri)
 	params, _ := url.ParseQuery(redirectUriParsed.RawQuery)
-	params.Add("code", code)
 
 	if state := r.URL.Query().Get("state"); state != "" {
 		params.Add("state", state)
 	}
 
 	redirectUriParsed.RawQuery = params.Encode()
+	redirectString := redirectUriParsed.String() + "&code=" + code
 
-	http.Redirect(w, r, redirectUriParsed.String(), 302)
+	http.Redirect(w, r, redirectString, 302)
 	return
 }
 
