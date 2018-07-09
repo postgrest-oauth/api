@@ -12,7 +12,7 @@ Default: "postgres://user:pass@postgresql:5432/test?sslmode=disable"
 
 See http://www.postgresql.org/docs/current/static/libpq-connect.html#LIBPQ-CONNSTRING for more information about connection string parameters.
 
-**OAUTH_ACCESS_TOKEN_JWT_SECRET**
+**OAUTH_ACCESS_TOKEN_JaW_SECRET**
 
 Default: "morethan32symbolssecretkey!!!!!!"
 
@@ -24,7 +24,7 @@ Default: 7200
 
 Access token life cycle in seconds
 
-**OAUTH_REFRESH_TOKEN_JWT_SECRET**
+**OAUTH_REFRESH_TOKEN_SECRET**
 
 Default: "notlesshan32symbolssecretkey!!!!"
 
