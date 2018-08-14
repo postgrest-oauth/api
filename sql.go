@@ -48,6 +48,24 @@ func (a *Owner) create() (id string, err error) {
 	return id, err
 }
 
+func (a *Owner) reVerify() (id string, err error) {
+	db, err := dbConnect()
+	defer db.Close()
+	query := fmt.Sprintf("SELECT id::varchar FROM oauth2.re_verify('%s', '%s', '%s')",
+		a.Username, a.VerificationCode, a.VerificationRoute)
+	err = db.QueryRow(query).Scan(&id)
+
+	switch {
+	case err != nil:
+		log.Print(err)
+		err = fmt.Errorf("looks like owner '%s' doesn't exists or verified", a.Username)
+	default:
+		log.Printf("Verification code re-sent. ID: %s\n", id)
+	}
+
+	return id, err
+}
+
 func (a *Owner) check() (id string, role string, jti string, err error) {
 	db, err := dbConnect()
 	defer db.Close()

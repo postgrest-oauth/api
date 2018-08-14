@@ -3,10 +3,12 @@ package main
 import (
 	"log"
 	"net/http"
+	"github.com/patrickmn/go-cache"
 )
 
 func init() {
 	Router.HandleFunc("/verify", handlerVerifyPost).Methods("POST")
+	Router.HandleFunc("/re-verify", handlerReVerifyPost).Methods("POST")
 }
 
 func handlerVerifyPost(w http.ResponseWriter, r *http.Request) {
@@ -30,5 +32,25 @@ func handlerVerifyPost(w http.ResponseWriter, r *http.Request) {
 		Rnd.JSON(w, http.StatusForbidden, ErrorResponse{err.Error()})
 	}
 
+	return
+}
+
+func handlerReVerifyPost(w http.ResponseWriter, r *http.Request) {
+	code := generateRandomNumbers(9)
+
+	owner := Owner{
+		Username:          r.FormValue("username"),
+		VerificationCode:  code,
+		VerificationRoute: authCodeConfig.OauthCodeUi + "/verify/" + code,
+	}
+
+	if id, err := owner.reVerify(); err == nil {
+		VerifyStorage.Set(code, id, cache.DefaultExpiration)
+		log.Printf("Re-verification code for user '%s' is: %s", id, code)
+		w.WriteHeader(http.StatusOK)
+	} else {
+		log.Printf(err.Error())
+		w.WriteHeader(http.StatusOK)
+	}
 	return
 }
