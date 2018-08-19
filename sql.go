@@ -93,7 +93,8 @@ func (a *Owner) verify() (resErr error) {
 
 	query := fmt.Sprintf("SELECT oauth2.verify_owner('%s')",
 		a.Id)
-	_, err = db.Query(query)
+	rows, err := db.Query(query)
+	defer rows.Close()
 
 	if err != nil {
 		log.Print(err)
@@ -130,7 +131,8 @@ func (a *Owner) resetPassword() (resErr error) {
 
 	query := fmt.Sprintf("SELECT oauth2.password_reset('%s', '%s')",
 		a.Id, a.Password)
-	_, err = db.Query(query)
+	rows, err := db.Query(query)
+	defer rows.Close()
 
 	switch {
 	case err != nil:
