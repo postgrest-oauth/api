@@ -17,6 +17,7 @@ func handlerSignupPost(w http.ResponseWriter, r *http.Request) {
 		Email:             r.FormValue("email"),
 		Phone:             r.FormValue("phone"),
 		Password:          r.FormValue("password"),
+		Language:          r.FormValue("language"),
 		VerificationCode:  code,
 		VerificationRoute: authCodeConfig.OauthCodeUi + "/verify/" + code,
 	}
