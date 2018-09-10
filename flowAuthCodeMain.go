@@ -8,6 +8,7 @@ import (
 	"log"
 	"net/http"
 	"time"
+	"strings"
 )
 
 type ErrorResponse struct {
@@ -46,7 +47,7 @@ func handlerLogout(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if authCodeConfig.ValidateRedirectURI == true {
-		if len(redirectUriRequest) > 0 && redirectUri != redirectUriRequest {
+		if len(redirectUriRequest) > 0 && !strings.HasPrefix(redirectUriRequest, redirectUri) {
 			err = errors.New("access denied")
 			log.Print(err)
 			http.Error(w, err.Error(), http.StatusBadRequest)
