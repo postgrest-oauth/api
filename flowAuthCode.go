@@ -75,10 +75,10 @@ func handlerAuthCode(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
 		}
-	} else {
-		if len(redirectUriRequest) > 0 {
-			redirectUri = redirectUriRequest
-		}
+	}
+
+	if len(redirectUriRequest) > 0 {
+		redirectUri = redirectUriRequest
 	}
 
 	uId, uRole, uJti := GetUser(r)
