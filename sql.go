@@ -11,6 +11,8 @@ import (
 
 type Owner struct {
 	Id                string
+	FacebookId        string
+	FacebookJson      string
 	Username          string
 	Password          string
 	Email             string
@@ -48,6 +50,25 @@ func (a *Owner) create() (id string, err error) {
 	return id, err
 }
 
+func (a *Owner) create_or_update_facebook(json string, phone string, lang string) (id string, role string, jti string, err error) {
+	db, err := dbConnect()
+	defer db.Close()
+	query := fmt.Sprintf("SELECT id::varchar, role::varchar, jti::varchar FROM oauth2.create_or_update_facebook_owner('%s'::json,'%s', '%s')",
+		json, phone, lang)
+	var uId, uRole, uJti sql.NullString
+	err = db.QueryRow(query).Scan(&uId, &uRole, &uJti)
+
+	switch {
+	case err != nil:
+		log.Print(err)
+		err = fmt.Errorf("issue with database")
+	default:
+		log.Printf("User created. ID: %s\n", id)
+	}
+
+	return id, role, jti, err
+}
+
 func (a *Owner) reVerify() (id string, err error) {
 	db, err := dbConnect()
 	defer db.Close()
@@ -82,6 +103,27 @@ func (a *Owner) check() (id string, role string, jti string, err error) {
 		id, role, jti = uId.String, uRole.String, uJti.String
 	} else {
 		err = fmt.Errorf("wrong login or password")
+	}
+
+	return id, role, jti, err
+}
+
+func (a *Owner) check_facebook() (id string, role string, jti string, err error) {
+	db, err := dbConnect()
+	defer db.Close()
+
+	query := fmt.Sprintf("SELECT id::varchar, role::varchar, jti::varchar FROM oauth2.check_owner_facebook('%s')",
+		a.FacebookId)
+	var uId, uRole, uJti sql.NullString
+	err = db.QueryRow(query).Scan(&uId, &uRole, &uJti)
+
+	if err != nil {
+		log.Print(err)
+		err = fmt.Errorf("something bad happened")
+	} else if uId.Valid && uRole.Valid && uJti.Valid {
+		id, role, jti = uId.String, uRole.String, uJti.String
+	} else {
+		err = fmt.Errorf("wrong facebook id")
 	}
 
 	return id, role, jti, err
