@@ -1,20 +1,17 @@
 {
 	"info": {
-		"_postman_id": "f81e7f86-a396-4bba-a460-3dfb7b93b981",
+		"_postman_id": "fcbefa6c-27ed-4d76-ba47-e537de278e1a",
 		"name": "postgrest-oauth-server",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
 		{
-			"_postman_id": "c7851ae8-6f1c-4c76-b8db-e56a2232ca2e",
 			"name": "Authorization Code Flow",
 			"item": [
 				{
-					"_postman_id": "b400fb13-eff2-4c87-a88a-47d1d7c7b895",
 					"name": "[Test] Code can be used once",
 					"item": [
 						{
-							"_postman_id": "5a963672-09de-449b-8e81-3c59325d9556",
 							"name": "Signup",
 							"event": [
 								{
@@ -67,6 +64,11 @@
 											"key": "phone",
 											"value": "{{phone}}",
 											"type": "text"
+										},
+										{
+											"key": "language",
+											"value": "en",
+											"type": "text"
 										}
 									]
 								},
@@ -85,7 +87,6 @@
 							"response": []
 						},
 						{
-							"_postman_id": "f5634958-ab33-4698-ba75-74eb86fc407c",
 							"name": "SignIn",
 							"event": [
 								{
@@ -137,7 +138,6 @@
 							"response": []
 						},
 						{
-							"_postman_id": "f5150ffa-bf60-4e9e-ae06-8ca773d389fe",
 							"name": "Get authorization code",
 							"event": [
 								{
@@ -190,7 +190,6 @@
 							"response": []
 						},
 						{
-							"_postman_id": "362c8cd3-3584-4ed4-be60-06415063d8db",
 							"name": "Use code",
 							"event": [
 								{
@@ -247,7 +246,6 @@
 							"response": []
 						},
 						{
-							"_postman_id": "eb56abac-ee5e-4fa2-a2a0-a8cbffce4b2c",
 							"name": "Use same code again",
 							"event": [
 								{
@@ -314,11 +312,9 @@
 					"_postman_isSubFolder": true
 				},
 				{
-					"_postman_id": "da3e1b9a-49b0-4da3-b870-e01c004ed889",
 					"name": "[Test] User already exist",
 					"item": [
 						{
-							"_postman_id": "b37189ff-a5e0-45ca-8410-6317625b5375",
 							"name": "Signup",
 							"event": [
 								{
@@ -372,6 +368,11 @@
 											"key": "phone",
 											"value": "{{phone}}",
 											"type": "text"
+										},
+										{
+											"key": "language",
+											"value": "en",
+											"type": "text"
 										}
 									]
 								},
@@ -390,7 +391,6 @@
 							"response": []
 						},
 						{
-							"_postman_id": "3d3f0f76-abf3-4db8-b256-95f1f3560f95",
 							"name": "Signup Again",
 							"event": [
 								{
@@ -441,6 +441,11 @@
 											"key": "phone",
 											"value": "{{phone}}",
 											"type": "text"
+										},
+										{
+											"key": "language",
+											"value": "en",
+											"type": "text"
 										}
 									]
 								},
@@ -462,11 +467,9 @@
 					"_postman_isSubFolder": true
 				},
 				{
-					"_postman_id": "2a1bfb0b-cadf-4bd5-a4ff-0531e0cede3e",
 					"name": "[Test] Signin gives cookie",
 					"item": [
 						{
-							"_postman_id": "bb50382d-0734-4eb3-a0c8-1e9dd7f945a5",
 							"name": "Signup",
 							"event": [
 								{
@@ -521,6 +524,11 @@
 											"key": "phone",
 											"value": "{{phone}}",
 											"type": "text"
+										},
+										{
+											"key": "language",
+											"value": "en",
+											"type": "text"
 										}
 									]
 								},
@@ -539,7 +547,6 @@
 							"response": []
 						},
 						{
-							"_postman_id": "eb605e1c-051d-4ee3-a697-eca5c7ab342c",
 							"name": "Signin",
 							"event": [
 								{
@@ -601,11 +608,9 @@
 					"_postman_isSubFolder": true
 				},
 				{
-					"_postman_id": "ae2cb2ef-2bc9-4c74-b49f-509c22fae8a5",
 					"name": "[Test] User can get tokens",
 					"item": [
 						{
-							"_postman_id": "8d3d1e6b-f9be-42bb-9b3a-280b2abc3c9a",
 							"name": "Signup",
 							"event": [
 								{
@@ -657,6 +662,11 @@
 											"key": "phone",
 											"value": "{{phone}}",
 											"type": "text"
+										},
+										{
+											"key": "language",
+											"value": "en",
+											"type": "text"
 										}
 									]
 								},
@@ -675,7 +685,6 @@
 							"response": []
 						},
 						{
-							"_postman_id": "e3d27a10-8094-496c-9f83-4b76334ab8b5",
 							"name": "Signin",
 							"event": [
 								{
@@ -727,7 +736,6 @@
 							"response": []
 						},
 						{
-							"_postman_id": "7c1d7d9d-c714-4a6f-9e9a-b519f3d25ab5",
 							"name": "Get authorization code",
 							"event": [
 								{
@@ -779,7 +787,6 @@
 							"response": []
 						},
 						{
-							"_postman_id": "ed43895f-037b-4441-988c-58038fdbfd59",
 							"name": "Get tokens",
 							"event": [
 								{
@@ -858,11 +865,9 @@
 					"_postman_isSubFolder": true
 				},
 				{
-					"_postman_id": "c5f8cc08-bfd8-4ae8-872b-cc88cb001d45",
 					"name": "[Test] Re-verification request",
 					"item": [
 						{
-							"_postman_id": "45c5ab8a-a647-448f-b0b1-a1e838f694eb",
 							"name": "Signup",
 							"event": [
 								{
@@ -914,6 +919,11 @@
 											"key": "phone",
 											"value": "{{phone}}",
 											"type": "text"
+										},
+										{
+											"key": "language",
+											"value": "en",
+											"type": "text"
 										}
 									]
 								},
@@ -932,7 +942,6 @@
 							"response": []
 						},
 						{
-							"_postman_id": "743c841e-d575-493b-9a00-ccaeb26e2f9e",
 							"name": "Re-verify by email",
 							"event": [
 								{
@@ -991,7 +1000,6 @@
 							"response": []
 						},
 						{
-							"_postman_id": "0bf607c5-c446-4bbc-a634-60f5167eb778",
 							"name": "Re-verify should always return 200 OK",
 							"event": [
 								{
@@ -1077,11 +1085,9 @@
 			]
 		},
 		{
-			"_postman_id": "eb3c4256-7bb9-4665-bd74-82b9579e7469",
 			"name": "Client Credentials Flow",
 			"item": [
 				{
-					"_postman_id": "250b2e1a-63e7-404e-bb5a-239b12d20596",
 					"name": "Access Token Request (No Secret)",
 					"event": [
 						{
@@ -1145,7 +1151,6 @@
 					"response": []
 				},
 				{
-					"_postman_id": "c3a9a244-e5fa-4657-8588-1c2ab4387c70",
 					"name": "Access Token Request",
 					"event": [
 						{
@@ -1221,7 +1226,6 @@
 					"response": []
 				},
 				{
-					"_postman_id": "065d2b58-0334-4d76-bb63-4666265ba294",
 					"name": "Get client info",
 					"event": [
 						{

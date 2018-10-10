@@ -15,6 +15,7 @@ type Owner struct {
 	Password          string
 	Email             string
 	Phone             string
+	Language          string
 	VerificationCode  string
 	VerificationRoute string
 }
@@ -33,8 +34,8 @@ func init() {
 func (a *Owner) create() (id string, err error) {
 	db, err := dbConnect()
 	defer db.Close()
-	query := fmt.Sprintf("SELECT id::varchar FROM oauth2.create_owner('%s', '%s', '%s', '%s', '%s')",
-		a.Email, a.Phone, a.Password, a.VerificationCode, a.VerificationRoute)
+	query := fmt.Sprintf("SELECT id::varchar FROM oauth2.create_owner('%s', '%s', '%s', '%s', '%s', '%s')",
+		a.Email, a.Phone, a.Password, a.Language, a.VerificationCode, a.VerificationRoute)
 	err = db.QueryRow(query).Scan(&id)
 
 	switch {
