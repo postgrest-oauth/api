@@ -96,6 +96,7 @@ func handlerFacebookPost(w http.ResponseWriter, r *http.Request) {
 	}
 
 	errCode := fbTokenResponse.Error.Code
+	log.Printf(fbTokenResponse.Error.Message)
 	if errCode > 0 {
 		err := fmt.Errorf("facebook token request failed")
 		log.Printf(err.Error())
