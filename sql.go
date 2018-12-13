@@ -58,12 +58,16 @@ func (a *Owner) create_or_update_facebook(json string, phone string, lang string
 	var uId, uRole, uJti sql.NullString
 	err = db.QueryRow(query).Scan(&uId, &uRole, &uJti)
 
+	id = uId.String
+	role = uRole.String
+	jti = uJti.String
+
 	switch {
 	case err != nil:
 		log.Print(err)
 		err = fmt.Errorf("issue with database")
 	default:
-		log.Printf("User created. ID: %s\n", id)
+		log.Printf("User created or updated. ID: %s\n", id)
 	}
 
 	return id, role, jti, err
