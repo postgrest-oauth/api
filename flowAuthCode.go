@@ -83,7 +83,7 @@ func handlerAuthCode(w http.ResponseWriter, r *http.Request) {
 
 	uId, uRole, uJti := GetUser(r)
 	if uId == "" || uRole == "" {
-		http.Redirect(w, r, authCodeConfig.OauthCodeUi + "/signin?"+r.URL.RawQuery, 302)
+		http.Redirect(w, r, authCodeConfig.OauthCodeUi+"/signin?"+r.URL.RawQuery, 302)
 		return
 	}
 

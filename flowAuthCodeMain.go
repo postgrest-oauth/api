@@ -7,8 +7,8 @@ import (
 	"github.com/thedevsaddam/renderer"
 	"log"
 	"net/http"
-	"time"
 	"strings"
+	"time"
 )
 
 type ErrorResponse struct {
