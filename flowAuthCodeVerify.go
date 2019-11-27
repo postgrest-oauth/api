@@ -1,9 +1,9 @@
 package main
 
 import (
+	"github.com/patrickmn/go-cache"
 	"log"
 	"net/http"
-	"github.com/patrickmn/go-cache"
 )
 
 func init() {
