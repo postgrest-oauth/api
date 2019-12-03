@@ -16,7 +16,7 @@ var Router = mux.NewRouter().StrictSlash(true)
 var authCodeConfig struct {
 	ValidateRedirectURI bool     `env:"OAUTH_VALIDATE_REDIRECT_URI" envDefault:"true"`
 	OauthCodeUi         string   `env:"OAUTH_CODE_UI" envDefault:"http://localhost:3685"`
-	AllowOrigin         []string `env:"" envSeparator:"," envDefault:"http://localhost:3685,http://localhost:3001"`
+	AllowOrigin         []string `env:"OAUTH_CORS_ALLOW_ORIGIN" envSeparator:"," envDefault:"http://localhost:3685,http://localhost:3001"`
 }
 
 func init() {
