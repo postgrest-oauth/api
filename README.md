@@ -55,6 +55,12 @@ Default: http://localhost:3685
 
 This is a URL of UI that is used for Authorization Code Flow. 
 
+**OAUTH_CORS_ALLOW_ORIGIN**
+
+Default: http://localhost:3685,http://localhost:3001
+
+Allowed CORS origins
+
 Testing with Newman
 ===================
 ```
