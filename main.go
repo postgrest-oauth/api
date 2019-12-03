@@ -28,7 +28,9 @@ func init() {
 func main() {
 	log.Println("Started!")
 	corsRouter := cors.New(cors.Options{
-		AllowedOrigins: []string{"http://foo.com"},
+		AllowedOrigins: []string{authCodeConfig.OauthCodeUi},
+		AllowCredentials: true,
+		Debug: true,
 	}).Handler(Router)
 	loggedRouter := handlers.LoggingHandler(os.Stdout, corsRouter)
 	log.Fatal(http.ListenAndServe(":3684", loggedRouter))
