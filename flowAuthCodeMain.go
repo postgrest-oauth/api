@@ -2,7 +2,6 @@ package main
 
 import (
 	"errors"
-	"github.com/caarlos0/env"
 	"github.com/patrickmn/go-cache"
 	"github.com/thedevsaddam/renderer"
 	"log"
@@ -15,23 +14,12 @@ type ErrorResponse struct {
 	Message string `json:"message"`
 }
 
-var authCodeConfig struct {
-	ValidateRedirectURI bool   `env:"OAUTH_VALIDATE_REDIRECT_URI" envDefault:"true"`
-	OauthCodeUi         string `env:"OAUTH_CODE_UI" envDefault:"http://localhost:3685"`
-}
-
 var VerifyStorage = cache.New(24*time.Hour, 2*time.Hour)
 var PassResetStorage = cache.New(10*time.Minute, 5*time.Minute)
 var Rnd = renderer.New()
 
 func init() {
-	err := env.Parse(&authCodeConfig)
-	if err != nil {
-		log.Printf("%+v\n", err)
-	}
-
 	Router.HandleFunc("/logout", handlerLogout).Methods("GET")
-
 }
 
 func handlerLogout(w http.ResponseWriter, r *http.Request) {
