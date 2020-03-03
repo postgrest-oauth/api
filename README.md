@@ -61,6 +61,22 @@ Default: http://localhost:3685,http://localhost:3001
 
 Allowed CORS origins
 
+**HASURA_ALLOWED_ROLES**
+
+Example: "editor,user"
+
+If specified, support for Hasura will be enabled and Hasura specific info will be added to the token:
+
+```
+  "https://hasura.io/jwt/claims": {
+    "x-hasura-allowed-roles": ["editor","user"],
+    "x-hasura-default-role": "user",
+    "x-hasura-user-id": "123"
+  }
+```
+
+More info: https://hasura.io/docs/1.0/graphql/manual/auth/authentication/jwt.html
+
 Testing with Newman
 ===================
 ```

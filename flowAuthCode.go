@@ -23,6 +23,12 @@ type AuthCodeData struct {
 	UserJti    string
 }
 
+type HasuraCodeData struct {
+	UserId     		string `json:"x-hasura-user-id"`
+	UserRole   		string `json:"x-hasura-default-role"`
+	AllowedRoles 	[]string `json:"x-hasura-allowed-roles"`
+}
+
 var Storage = cache.New(10*time.Minute, 20*time.Minute)
 
 func init() {
@@ -205,6 +211,12 @@ func fillAuthFlowResponse(data AuthCodeData) tokensResponse {
 	claims["client_type"] = data.ClientType
 	claims["jti"] = data.UserJti
 	claims["exp"] = time.Now().Add(time.Second * time.Duration(flowConfig.AccessTokenTTL)).Unix()
+
+	if len(flowConfig.HasuraAllowedRoles) > 0 {
+		HasuraData := HasuraCodeData{UserId: data.UserId, UserRole: data.UserRole, AllowedRoles: flowConfig.HasuraAllowedRoles}
+		claims["https://hasura.io/jwt/claims"] = HasuraData
+	}
+	
 	accessTokenString, _ := accessToken.SignedString([]byte(flowConfig.AccessTokenSecret))
 
 	refreshToken := jwt.New(jwt.SigningMethodHS256)

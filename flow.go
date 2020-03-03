@@ -19,9 +19,10 @@ type errorResponse struct {
 }
 
 var flowConfig struct {
-	AccessTokenSecret  string `env:"OAUTH_ACCESS_TOKEN_SECRET" envDefault:"morethan32symbolssecretkey!!!!!!"`
-	AccessTokenTTL     int    `env:"OAUTH_ACCESS_TOKEN_TTL" envDefault:"7200"`
-	RefreshTokenSecret string `env:"OAUTH_REFRESH_TOKEN_SECRET" envDefault:"notlesshan32symbolssecretkey!!!!"`
+	AccessTokenSecret  	string 		`env:"OAUTH_ACCESS_TOKEN_SECRET" envDefault:"morethan32symbolssecretkey!!!!!!"`
+	AccessTokenTTL     	int    		`env:"OAUTH_ACCESS_TOKEN_TTL" envDefault:"7200"`
+	RefreshTokenSecret 	string 		`env:"OAUTH_REFRESH_TOKEN_SECRET" envDefault:"notlesshan32symbolssecretkey!!!!"`
+	HasuraAllowedRoles 	[]string  `env:"HASURA_ALLOWED_ROLES" envSeparator:"," envDefault:""`
 }
 
 func init() {
