@@ -21,15 +21,17 @@ func handlerVerifyPost(w http.ResponseWriter, r *http.Request) {
 
 	if ok {
 		owner.Id = savedId.(string)
-	}
-
-	if err := owner.verify(); ok && err == nil {
-		VerifyStorage.Delete(code)
-		log.Printf("user '%s' successfully verified", owner.Id)
-		w.WriteHeader(http.StatusOK)
+		if err := owner.verify(); ok && err == nil {
+			VerifyStorage.Delete(code)
+			log.Printf("user '%s' successfully verified", owner.Id)
+			w.WriteHeader(http.StatusOK)
+		} else {
+			log.Print(err)
+			Rnd.JSON(w, http.StatusForbidden, ErrorResponse{err.Error()})
+		}
 	} else {
-		log.Print(err)
-		Rnd.JSON(w, http.StatusForbidden, ErrorResponse{err.Error()})
+		log.Printf("code '%s' is invalid", code)
+		Rnd.JSON(w, http.StatusForbidden, ErrorResponse{"invalid code"})
 	}
 
 	return
