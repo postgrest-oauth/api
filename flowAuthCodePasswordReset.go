@@ -19,15 +19,17 @@ func handlerPassResetPost(w http.ResponseWriter, r *http.Request) {
 	if ok {
 		owner.Id = savedId.(string)
 		owner.Password = password
-	}
-
-	if err := owner.resetPassword(); err == nil {
-		PassResetStorage.Delete(code)
-		log.Printf("password reset for user '%s' was successful", owner.Id)
-		w.WriteHeader(http.StatusOK)
+		if err := owner.resetPassword(); err == nil {
+			PassResetStorage.Delete(code)
+			log.Printf("password reset for user '%s' was successful", owner.Id)
+			w.WriteHeader(http.StatusOK)
+		} else {
+			log.Printf(err.Error())
+			Rnd.JSON(w, http.StatusForbidden, ErrorResponse{err.Error()})
+		}
 	} else {
-		log.Printf(err.Error())
-		Rnd.JSON(w, http.StatusForbidden, ErrorResponse{err.Error()})
+		log.Printf("code '%s' is invalid", code)
+		Rnd.JSON(w, http.StatusForbidden, ErrorResponse{"invalid code"})
 	}
 
 	return
