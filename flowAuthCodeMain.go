@@ -2,6 +2,7 @@ package main
 
 import (
 	"errors"
+	"github.com/danilopolani/gocialite"
 	"github.com/patrickmn/go-cache"
 	"github.com/thedevsaddam/renderer"
 	"log"
@@ -14,6 +15,7 @@ type ErrorResponse struct {
 	Message string `json:"message"`
 }
 
+var gocial = gocialite.NewDispatcher()
 var VerifyStorage = cache.New(24*time.Hour, 2*time.Hour)
 var PassResetStorage = cache.New(10*time.Minute, 5*time.Minute)
 var Rnd = renderer.New()
