@@ -11,7 +11,7 @@ func init() {
 }
 
 func handlerSignupPost(w http.ResponseWriter, r *http.Request) {
-	code := generateRandomNumbers(9)
+	code := generateRandomNumbers(flowConfig.VerificationCodeLength)
 
 	owner := Owner{
 		Email:             r.FormValue("email"),

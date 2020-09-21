@@ -12,7 +12,7 @@ func init() {
 
 func handlerPassRequestPost(w http.ResponseWriter, r *http.Request) {
 	ClearSession(w)
-	code := generateRandomNumbers(9)
+	code := generateRandomNumbers(flowConfig.VerificationCodeLength)
 
 	owner := Owner{
 		Username:          r.FormValue("username"),
