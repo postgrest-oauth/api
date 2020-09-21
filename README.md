@@ -77,6 +77,57 @@ If specified, support for Hasura will be enabled and Hasura specific info will b
 
 More info: https://hasura.io/docs/1.0/graphql/manual/auth/authentication/jwt.html
 
+Facebook Signup/Signin
+======================
+
+Prepare
+-------
+
+1. Go to [developers.facebook.com](https://developers.facebook.com) and create an app, add Facebook Login product ([tutorial](https://youtu.be/MpLCBEdhg3Y))
+2. Add OAUTH_FACEBOOK_CLIENT_ID and OAUTH_FACEBOOK_CLIENT_SECRET environmental variables
+
+Configure your app
+---------------
+
+Add 2 functions to your database
+```SQL
+CREATE OR REPLACE FUNCTION oauth2.create_facebook_owner(obj json, phone varchar, OUT id varchar, OUT role varchar, OUT jti varchar)
+AS $$
+        INSERT INTO api.users(email, phone, role, facebook_id)
+        VALUES
+         (
+         obj->>'email'::varchar,
+         phone,
+         'verified',
+         obj->>'id'::varchar
+         )
+        RETURNING id::varchar, role::varchar, jti::varchar;
+$$ LANGUAGE SQL;
+
+CREATE OR REPLACE FUNCTION oauth2.check_owner_facebook(facebook_id varchar, OUT id varchar, OUT role varchar, OUT jti varchar)
+AS $$
+SELECT id::varchar, role::varchar, jti::varchar FROM api.users
+    WHERE facebook_id = check_owner_facebook.facebook_id;
+$$ LANGUAGE SQL;
+```
+
+Get facebook button URL
+```
+GET http://localhost:3684/facebook/url?redirect_uri=http://localhost:3685/
+```
+
+After user clicks it he'll be returned to your app with `code` and `state`. Pass them to `/api/enter` route
+
+```
+POST http://localhost:3684/facebook/enter
+Content-Type: application/x-www-form-urlencoded
+
+code={CODE}&state={STATE}
+
+```
+
+If user don't exist it will be created. If it exists he'll be signed in. Now you can redirect your app to `/authorize`  
+
 Testing with Newman
 ===================
 ```
