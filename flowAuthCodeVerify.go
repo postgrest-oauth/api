@@ -38,7 +38,7 @@ func handlerVerifyPost(w http.ResponseWriter, r *http.Request) {
 }
 
 func handlerReVerifyPost(w http.ResponseWriter, r *http.Request) {
-	code := generateRandomNumbers(9)
+	code := generateRandomNumbers(flowConfig.VerificationCodeLength)
 
 	owner := Owner{
 		Username:          r.FormValue("username"),
