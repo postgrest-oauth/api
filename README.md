@@ -1,10 +1,45 @@
-README
-------
+PostgREST OAuth2 server
+=======================
 
 > [!IMPORTANT]
 > **This project is archived and is not maintained.** Do not use it for new projects.
 > For authentication in front of PostgREST, see the [PostgREST external authentication docs](https://docs.postgrest.org/en/stable/explanations/external_auth.html),
 > or use a maintained auth server such as [Supabase Auth](https://github.com/supabase/auth) or [Keycloak](https://www.keycloak.org/).
+
+A standalone OAuth2 server for [PostgREST](https://postgrest.org), written in Go. It adds user accounts to a PostgREST application: signup, signin, verification by code, password reset and Facebook login. It issues JWT access tokens signed with the same secret that PostgREST validates, so PostgREST accepts them directly and switches the database role to the `role` claim from the token.
+
+The server has no users table of its own. User storage stays in your database: the server calls a small contract of SQL functions in the `oauth2` schema (`create_owner`, `check_owner`, `verify_owner`, `password_request` and so on), and your implementation of these functions decides how users are stored. A working implementation is in the [example](https://github.com/postgrest-oauth/example) repository.
+
+Features
+--------
+
+* OAuth2 Authorization Code and Client Credentials flows
+* Signup and signin with email or phone
+* Account verification with a one-time code, with re-verification
+* Password reset flow
+* Facebook signup and signin
+* JWT access and refresh tokens compatible with PostgREST
+* Optional [Hasura](https://hasura.io)-compatible claims in the token
+* Configured only with environment variables, ships as a Docker image
+* Integration tests with a Postman collection and Newman
+* A ready React frontend for the whole flow: [postgrest-oauth/ui](https://github.com/postgrest-oauth/ui)
+
+Endpoints
+---------
+
+```
+GET  /authorize            Authorization Code flow entry
+POST /token                exchange code / refresh token / client credentials
+POST /signup               create an account
+POST /signin               password signin
+POST /verify               confirm account with a code
+POST /re-verify            request a new verification code
+POST /password/request     start password reset
+POST /password/reset       finish password reset
+GET  /logout               drop the session
+GET  /facebook/url         get Facebook login URL
+POST /facebook/enter       signup or signin with Facebook
+```
 
 Environment Variables
 =====================
