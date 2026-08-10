@@ -8,12 +8,14 @@ PostgREST OAuth2 server
 
 A standalone OAuth2 server for [PostgREST](https://postgrest.org), written in Go. It adds user accounts to a PostgREST application: signup, signin, verification by code, password reset and Facebook login. It issues JWT access tokens signed with the same secret that PostgREST validates, so PostgREST accepts them directly and switches the database role to the `role` claim from the token.
 
+The Authorization Code, Refresh Token and Client Credentials grants follow the OAuth2 standard ([RFC 6749](https://datatracker.ietf.org/doc/html/rfc6749)), and tokens are standard JWT ([RFC 7519](https://datatracker.ietf.org/doc/html/rfc7519)). Any client library that supports these standards can work with the server.
+
 The server has no users table of its own. User storage stays in your database: the server calls a small contract of SQL functions in the `oauth2` schema (`create_owner`, `check_owner`, `verify_owner`, `password_request` and so on), and your implementation of these functions decides how users are stored. A working implementation is in the [example](https://github.com/postgrest-oauth/example) repository.
 
 Features
 --------
 
-* OAuth2 Authorization Code and Client Credentials flows
+* Standard OAuth2 flows per RFC 6749: Authorization Code, Refresh Token and Client Credentials
 * Signup and signin with email or phone
 * Account verification with a one-time code, with re-verification
 * Password reset flow
