@@ -1,7 +1,10 @@
 README
 ------
 
-[![Build Status](https://travis-ci.org/postgrest-oauth/api.svg?branch=master)](https://travis-ci.org/postgrest-oauth/api)
+> [!IMPORTANT]
+> **This project is archived and is not maintained.** Do not use it for new projects.
+> For authentication in front of PostgREST, see the [PostgREST external authentication docs](https://docs.postgrest.org/en/stable/explanations/external_auth.html),
+> or use a maintained auth server such as [Supabase Auth](https://github.com/supabase/auth) or [Keycloak](https://www.keycloak.org/).
 
 Environment Variables
 =====================
